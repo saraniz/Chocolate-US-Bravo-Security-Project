@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Debugging files
+*.swp
+*.swo
+*.bak
+
+# Build files
+dist/
+build/
+
+# Coverage reports (for testing)
+coverage/
+
+# Temporary files
+tmp/
+temp/
