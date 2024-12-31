@@ -11,3 +11,63 @@ footer{
 .img5{
     width: 500px;
 }
+.body{
+    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(255, 255, 255, 0.98) 0%, rgba(149, 36, 197, 0.98) 57.17%, rgba(144, 83, 13, 0.7) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+.hero img{
+    width: 500px;
+    position: relative;
+}
+.circle{
+    background: radial-gradient(55.48% 55.48% at 50% 44.52%, rgba(213, 156, 89, 0.76) 8.17%, rgba(228, 145, 253, 0.76) 63.5%, rgba(89, 33, 149, 0.7296) 99.99%);
+
+    width: 550px;
+    height: 400px;
+    position: absolute;
+    margin-top: 150px;
+    border-radius: 50%;
+    margin-left: 30px;
+}
+.chco1{
+    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(139, 19, 186, 0.9843) 0%, rgba(144, 24, 196, 0.55) 57.17%, rgba(107, 28, 108, 0.86) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+.hero1 img{
+    width: 600px;
+    margin-top: -210px;
+    margin-left: 100px;
+}
+.hero1{
+    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(139, 19, 186, 0.9843) 0%, rgba(144, 24, 196, 0.55) 57.17%, rgba(107, 28, 108, 0.86) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+
+}
+.root img{
+    width: 300px;
+}
+.product-img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background-color: rgba(192, 33, 203, 0.804);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7); /* Horizontal offset, vertical offset, blur, color */
+}
+.hero3{
+    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(186, 116, 19, 0.984) 0%, rgba(115, 82, 33, 0.936) 57.17%, rgba(132, 98, 6, 0.86) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+.hero3 img{
+    width: 600px;
+    margin-left: 100px;
+}
+
+#carousel {
+    width: 100%;
+    overflow: hidden;
+}
+#carousel .product-card.center {
+    transform: scale(1.2);
+}
+#btnn{
+    background: rgba(200, 124, 36, 1);
+    border-radius: 20px;
+}
