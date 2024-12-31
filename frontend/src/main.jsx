@@ -4,9 +4,10 @@ import './index.css'
 import App from './App.jsx'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
+import HomePage from './pages/HomePage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Footer />
+    <HomePage />
   </StrictMode>,
 )
