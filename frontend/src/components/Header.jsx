@@ -1,4 +1,9 @@
 import React from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../index.css'
+import '@fortawesome/fontawesome-free/css/all.css';
+
+
 
 const Header = () => {
   return (
@@ -28,7 +33,7 @@ const Header = () => {
 
             <div className="col d-flex justify-content-end align-items-center">
               <input type="text" className="form-control w-50" placeholder="Search..." />
-              <a href="#" className="btn btn-outline-secondary">
+              <a href="#" className="btn">
                 <i className="fa fa-search"></i>
               </a>
               <a href="#" className="ms-3 text-black">
