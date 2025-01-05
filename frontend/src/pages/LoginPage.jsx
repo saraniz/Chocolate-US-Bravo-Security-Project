@@ -17,6 +17,10 @@ const LoginPage = () => {
                         <input className="form-control mt-2" placeholder="eg:STU2220009" type="text" name="" id="username" />
                         <span className="error text-danger" id="usernameError"></span>
                     </div>
+
+                    <div>
+                        
+                    </div>
                     
                     <div className="form-group mt-3">
                         <label for="password">Password</label>
