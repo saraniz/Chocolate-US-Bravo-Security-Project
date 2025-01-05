@@ -5,7 +5,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 const LoginPage = () => {
   return (
     <>
-    <div className='log-bag'>
+    <div className='bg-white'>
         <div className="container-fluid ">
             <div className="row vh-100 justify-content-center align-items-center">
                 <div className="col-md-6 text-white login-form p-5">
