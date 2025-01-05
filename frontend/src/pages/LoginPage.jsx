@@ -12,7 +12,6 @@ const LoginPage = () => {
                     <h1 class="text-center">LOG IN</h1>
 
                 <form action="" id="loginForm" onsubmit="">
-<div></div>
                     <div className="form-group">
                         <label for="username">User Name</label>
                         <input className="form-control mt-2" placeholder="eg:STU2220009" type="text" name="" id="username" />
