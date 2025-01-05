@@ -71,3 +71,13 @@ footer{
     background: rgba(200, 124, 36, 1);
     border-radius: 20px;
 }
+.login-form {
+    background:linear-gradient(131.07deg, #623d12 2.13%, #70430F 62.45%, #834712 97.87%);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+}
+.log-bag{
+    background: radial-gradient(145.35% 145.13% at -31.87% -10.45%, rgba(217, 159, 249, 0.98) 0%, rgba(142, 19, 194, 0.98) 56.91%, rgba(67, 40, 9, 0.98) 82.56%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+
+}
