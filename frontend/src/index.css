@@ -1,9 +1,7 @@
 .hnav{
-    color:rgba(169, 102, 23, 1);
+    color:rgb(195, 47, 200);
 }
-footer{
-    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(139, 19, 186, 0.9843) 0%, rgba(144, 24, 196, 0.55) 57.17%, rgba(107, 28, 108, 0.86) 87.17%);
-}
+
 .img4{
     width: 300px;
     height: 400px;
@@ -11,9 +9,7 @@ footer{
 .img5{
     width: 500px;
 }
-.body{
-    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(255, 255, 255, 0.98) 0%, rgba(149, 36, 197, 0.98) 57.17%, rgba(144, 83, 13, 0.7) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
-}
+
 
 .hero img{
     width: 500px;
@@ -29,9 +25,7 @@ footer{
     border-radius: 50%;
     margin-left: 30px;
 }
-.chco1{
-    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(139, 19, 186, 0.9843) 0%, rgba(144, 24, 196, 0.55) 57.17%, rgba(107, 28, 108, 0.86) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
-}
+
 .hero1 img{
     width: 600px;
     margin-top: -210px;
@@ -52,9 +46,7 @@ footer{
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7); /* Horizontal offset, vertical offset, blur, color */
 }
-.hero3{
-    background: radial-gradient(134.68% 134.68% at -21.25% 0%, rgba(186, 116, 19, 0.984) 0%, rgba(115, 82, 33, 0.936) 57.17%, rgba(132, 98, 6, 0.86) 87.17%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
-}
+
 .hero3 img{
     width: 600px;
     margin-left: 100px;
@@ -68,11 +60,11 @@ footer{
     transform: scale(1.2);
 }
 #btnn{
-    background: rgba(200, 124, 36, 1);
+    background-color: rgba(145, 18, 154, 0.804);
     border-radius: 20px;
 }
 .login-form {
-    background-color: rgb(151, 101, 25);
+    background-color: rgb(164, 23, 169);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);

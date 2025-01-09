@@ -9,6 +9,8 @@ import LoginPage from './pages/LoginPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <LoginPage />
+    <Header />
+    <HomePage />
+    <Footer />
   </StrictMode>,
 )

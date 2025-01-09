@@ -25,8 +25,8 @@ const HomePage = () => {
 
   return (
     <>
-    <div className='body'>
-      <div className="hero vh-100  container-fluid">
+    <div className="">
+      <div className="hero vh-100  container-fluid bg-white">
         <div className="row">
           <div className="col">
             <div className="circle"></div>
@@ -55,8 +55,8 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="text-center hero2">
-        <h2 className="">TOP SELLERS</h2>
+      <div className="text-center hero2 m-5 p-3 bg-white">
+        <h2 className="mb-4">TOP SELLERS</h2>
         <div id="carousel" className="d-flex justify-content-around pt-5 pb-4 align-items-center">
           <div className="product-card root">
             <img src='src\img\Dairy Milk.png' alt="Snickers" className="product-img" />
@@ -76,11 +76,11 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="container-fluid hero3">
+      <div className="container-fluid bg-light hero3">
         <div className="row">
           <div className="col p-5 text-white fs-2 mx-3">
-            <p>Treat your favourite person with a <br /> <span className="h1"> Chocolate </span> <br /> and make their day awesome!</p>
-            <button id='btnn' className="btn">SHOP NOW</button>
+            <p className='text-dark'>Treat your favourite person with a <br /> <span className="h1"> Chocolate </span> <br /> and make their day awesome!</p>
+            <button id='btnn' className="btn text-white">SHOP NOW</button>
           </div>
           <div className="col">
             <img className="img6" src='src\img\Milk.png' alt="Milk" />
