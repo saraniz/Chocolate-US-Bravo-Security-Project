@@ -17,10 +17,10 @@ const Footer = () => {
           </div>
           <div className="col mt-5">
             <ul className="navbar-nav">
-              <li className="nav-link"><a className="text-decoration-none l1" href="#">Newest Product</a></li>
-              <li className="nav-link"><a className="text-decoration-none l1" href="#">Home</a></li>
-              <li className="nav-link"><a className="text-decoration-none l1" href="#">Login/Signup</a></li>
-              <li className="nav-link"><a className="text-decoration-none l1" href="#">About Us</a></li>
+              <li className=""><a className="text-decoration-none nav-link l1" href="#">Newest Product</a></li>
+              <li className=""><a className="text-decoration-none nav-link l1" href="#">Home</a></li>
+              <li className=""><a className="text-decoration-none nav-link l1" href="#">Login/Signup</a></li>
+              <li className=""><a className="text-decoration-none nav-link l1" href="#">About Us</a></li>
             </ul>
           </div>
           <div className="col mt-5">
@@ -39,22 +39,22 @@ const Footer = () => {
       </div>
 
     
-    <footer className="text-center justify-content-center align-items-center py-2 chco1">
+    <footer className="text-center justify-content-center align-items-center py-2 bg-light">
   <div className="container">
     <div className="row">
       <div className="col">
-        <p className="mb-0 text-white">All rights reserved &copy; 2024</p>
+        <p className="mb-0 hnav">All rights reserved &copy; 2024</p>
       </div>
       <div className="col d-flex justify-content-center">
         <ul className="list-unstyled d-flex">
           <li className="nav-link mx-2">
-            <a href=""><i class="fab fa-facebook-f text-white"></i></a>
+            <a href=""><i class="fab fa-facebook-f hnav"></i></a>
           </li>
           <li className="nav-link mx-2">
-            <a href=""><i class="fab fa-instagram text-white"></i></a>
+            <a href=""><i class="fab fa-instagram hnav"></i></a>
           </li>
           <li className="nav-link mx-2">
-            <a href=""><i class="fab fa-youtube text-white"></i></a>
+            <a href=""><i class="fab fa-youtube hnav"></i></a>
           </li>
         </ul>
       </div>
