@@ -33,7 +33,7 @@ const HomePage = () => {
             <img className="m-5" src='src\img\Chocolate Collection.png' alt="Chocolate Collection" />
           </div>
           <div className="col m-5 p-5">
-            <p className="h1">"A <span className="highlight">CHOCOLATE</span> CAN <br /> CHANGE YOUR MOOD"</p>
+            <p className="txt">"A <span className="highlight">CHOCOLATE</span> CAN <br /> CHANGE YOUR MOOD"</p>
             <button id='btnn' className="btn">SHOP NOW</button>
           </div>
         </div>
