@@ -62,6 +62,7 @@
 #btnn{
     background-color: rgba(145, 18, 154, 0.804);
     border-radius: 20px;
+    
 }
 .login-form {
     background-color: rgb(164, 23, 169);
@@ -69,4 +70,7 @@
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
 }
-
+.txt {
+    font-size: 3.5rem; /* Adjust the size as needed */
+    margin-top:130px;
+  }

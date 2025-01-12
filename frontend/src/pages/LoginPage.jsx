@@ -99,7 +99,7 @@ const LoginPage = () => {
               </div>
 
               <div className="d-flex justify-content-center">
-                <Button placeholder="Login" />
+                <Button  placeholder="Login" />
               </div>
             </form>
           </div>
