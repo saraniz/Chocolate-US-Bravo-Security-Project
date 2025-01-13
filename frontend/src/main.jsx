@@ -11,9 +11,10 @@ import RegisterPage from './pages/RegisterPage.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
    
-   <Header />
-    <HomePage />
-    <Footer />
+   
+    <RegisterPage/>
+  
+   
     
   </StrictMode>,
 )
