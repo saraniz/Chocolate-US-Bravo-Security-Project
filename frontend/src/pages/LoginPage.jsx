@@ -6,6 +6,7 @@ import {
   validateRequired,
   validatePassword,
 } from '../utils/validation'; 
+import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   const [formValues, setFormValues] = useState({ username: "", password: "" });
@@ -92,9 +93,10 @@ const LoginPage = () => {
                   <p>Don't have an account?</p>
                 </div>
                 <div className="col">
-                  <a href="#" className="text-decoration-none text-light">
+                  <Link to='/register'><a href="#" className="text-decoration-none text-light">
                     Sign Up
-                  </a>
+                  </a></Link>
+                  
                 </div>
               </div>
 

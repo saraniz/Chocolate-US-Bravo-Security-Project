@@ -26,9 +26,9 @@ const Footer = () => {
           <div className="col mt-5">
             <ul className="navbar-nav">
               <p className='border-bottom border-2'>Contact Us</p>
-              <li className="nav-link"><i class="fa fa-phone mx-1 hnav"></i>01123456</li>
-              <li className="nav-link"><i class="fa fa-envelope-open mx-1 hnav"></i>uschocolate@gmail.com</li>
-              <li className="nav-link"><i class="fas fa-map-marker-alt mx-1 hnav"></i>Magaragama, colombo, srilanka.</li>
+              <li className="nav-link"><i className="fa fa-phone mx-1 hnav"></i>01123456</li>
+              <li className="nav-link"><i className="fa fa-envelope-open mx-1 hnav"></i>uschocolate@gmail.com</li>
+              <li className="nav-link"><i className="fas fa-map-marker-alt mx-1 hnav"></i>Magaragama, colombo, srilanka.</li>
             </ul>
           </div>
           <div className="col">
