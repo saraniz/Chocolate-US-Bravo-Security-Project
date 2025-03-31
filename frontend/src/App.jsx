@@ -11,7 +11,7 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
+    <div className="font-poppins">
       
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -19,7 +19,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
       
-    </>
+    </div>
   );
 }
 

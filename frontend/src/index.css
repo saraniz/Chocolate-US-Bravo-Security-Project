@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
 @custom-variant dark (&:is(.dark *));
+
+
 
 
 
@@ -75,6 +79,7 @@
 }
 
 @theme inline {
+    --font-poppins: "Josefin Sans", 'sans-serif';
     --radius-sm:calc(var(--radius) - 4px);
     --radius-md:calc(var(--radius) - 2px);
     --radius-lg:var(--radius);
@@ -112,11 +117,14 @@
     --color-sidebar-ring:var(--sidebar-ring);
 }
 
+
+/* Applying Tailwind classes globally */
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
+    font-family: 'Poppins', sans-serif;
+  }
 }

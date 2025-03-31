@@ -6,11 +6,11 @@ import React from 'react'
 
 const HomePage = () => {
   return (
-    <div>
-      <Header/>
-      <Hero/>
-      <PopularProducts/>
-      <Footer/>
+    <div className='mx-auto px-4 max-w-screen-xl font-poppins'>
+      <Header />
+      <Hero />
+      <PopularProducts />
+      <Footer />
     </div>
   )
 }

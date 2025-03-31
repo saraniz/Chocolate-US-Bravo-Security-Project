@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -15,10 +16,18 @@ const Footer = () => {
           <div className="flex flex-col items-start">
             <h5 className="text-lg font-semibold text-chocolate-500 mb-3">Quick Links</h5>
             <ul className="space-y-2">
-              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">Newest Product</a></li>
-              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">Home</a></li>
-              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">Login/Signup</a></li>
-              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">About Us</a></li>
+              <li>
+                <Link className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" to="/newest-product">Newest Product</Link>
+              </li>
+              <li>
+                <Link className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" to="/">Home</Link>
+              </li>
+              <li>
+                <Link className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" to="/login">Login/Signup</Link>
+              </li>
+              <li>
+                <Link className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" to="/about">About Us</Link>
+              </li>
             </ul>
           </div>
 
@@ -57,7 +66,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="text-sm text-neutral-600">
-            <p>Made with love and chocolate</p>
+            <p>Made with love and chocolate 💖</p>
           </div>
         </div>
       </footer>
