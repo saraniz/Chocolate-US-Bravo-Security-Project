@@ -80,7 +80,11 @@ export function RegisterForm({ className, ...props }) {
                     className="absolute inset-y-0 right-3 flex items-center text-sm"
                     onClick={togglePasswordVisibility}
                   >
-                    {showPassword ? "🙈" : "👁️"}
+                    {showPassword ? (
+                      ( <div className="text-xl text-gray-500"><i className="fa fa-eye-slash"></i></div> )
+                    ) : (
+                      <div className="text-xl text-gray-500"><i className="fa fa-eye"></i></div>
+                    )}
                   </button>
                 </div>
               </div>
