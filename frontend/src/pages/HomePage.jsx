@@ -6,10 +6,11 @@ import React from 'react'
 
 const HomePage = () => {
   return (
-    <div className='mx-auto px-4 max-w-screen-xl font-poppins'>
+    <div className='mx-auto max-w-screen-xl font-poppins'>
       <Header />
       <Hero />
       <PopularProducts />
+      <Deliver/>
       <Footer />
     </div>
   )
