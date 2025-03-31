@@ -47,7 +47,7 @@ export function RegisterForm({ className, ...props }) {
           <form className="p-12 md:p-8" onSubmit={validateForm}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-md font-bold">Create an account</h1>
+                <h1 className="text-2xl font-bold">Create an account</h1>
                 <p className="text-muted-foreground text-balance">
                   Sign up to get started
                 </p>

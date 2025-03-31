@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPhone, faEnvelopeOpen, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFacebookF, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
   return (
@@ -36,13 +39,13 @@ const Footer = () => {
             <h5 className="text-lg font-semibold text-chocolate-500 mb-3">Contact Us</h5>
             <ul className="space-y-2">
               <li className="text-sm text-neutral-700">
-                <i className="fa fa-phone mx-2"></i> 01123456
+                <FontAwesomeIcon icon={faPhone} className="mx-2" /> 01123456
               </li>
               <li className="text-sm text-neutral-700">
-                <i className="fa fa-envelope-open mx-2"></i> uschocolate@gmail.com
+                <FontAwesomeIcon icon={faEnvelopeOpen} className="mx-2" /> uschocolate@gmail.com
               </li>
               <li className="text-sm text-neutral-700">
-                <i className="fas fa-map-marker-alt mx-2"></i> Magaragama, Colombo, Sri Lanka
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="mx-2" /> Magaragama, Colombo, Sri Lanka
               </li>
             </ul>
           </div>
@@ -55,13 +58,13 @@ const Footer = () => {
             <p className="text-sm text-neutral-600">All rights reserved &copy; 2024</p>
             <div className="flex space-x-4">
               <a href="#" className="text-neutral-600 hover:text-chocolate-500 transition duration-300">
-                <i className="fab fa-facebook-f"></i>
+                <FontAwesomeIcon icon={faFacebookF} />
               </a>
               <a href="#" className="text-neutral-600 hover:text-chocolate-500 transition duration-300">
-                <i className="fab fa-instagram"></i>
+                <FontAwesomeIcon icon={faInstagram} />
               </a>
               <a href="#" className="text-neutral-600 hover:text-chocolate-500 transition duration-300">
-                <i className="fab fa-youtube"></i>
+                <FontAwesomeIcon icon={faYoutube} />
               </a>
             </div>
           </div>
