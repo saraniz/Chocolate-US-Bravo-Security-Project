@@ -1,69 +1,68 @@
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../index.css'
-
-
-
+import React from 'react';
 
 const Footer = () => {
   return (
     <>
-    <div className="container-fluid">
-        <div className="row choco5">
-          <div className="col mt-5 hnav">
-            <h1>Chocolate Bravo</h1>
-            <h5 className="position-absolute">This is not just a company<br />this is a 'Chocolate Gub'</h5>
-            <div><img className="img5" src='src\img\Milk2.png' alt="Milk Chocolate" /></div>
+      <div className="container-fluid bg-white text-black py-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          {/* First Column */}
+          <div className="flex flex-col items-start">
+            <h1 className="text-3xl font-bold text-chocolate-500 mb-4">Chocolate Bravo</h1>
+            <p className="text-sm font-medium text-neutral-600 mb-4">This is not just a company, This is a 'Chocolate Hub'.</p>
           </div>
-          <div className="col mt-5">
-            <ul className="navbar-nav">
-              <li className=""><a className="text-decoration-none nav-link l1" href="#">Newest Product</a></li>
-              <li className=""><a className="text-decoration-none nav-link l1" href="#">Home</a></li>
-              <li className=""><a className="text-decoration-none nav-link l1" href="#">Login/Signup</a></li>
-              <li className=""><a className="text-decoration-none nav-link l1" href="#">About Us</a></li>
-            </ul>
-          </div>
-          <div className="col mt-5">
-            <ul className="navbar-nav">
-              <p className='border-bottom border-2'>Contact Us</p>
-              <li className="nav-link"><i className="fa fa-phone mx-1 hnav"></i>01123456</li>
-              <li className="nav-link"><i className="fa fa-envelope-open mx-1 hnav"></i>uschocolate@gmail.com</li>
-              <li className="nav-link"><i className="fas fa-map-marker-alt mx-1 hnav"></i>Magaragama, colombo, srilanka.</li>
-            </ul>
-          </div>
-          <div className="col">
-          <img className="img4" src="src\img\Milk splash.png" alt="Milk Splash" />
 
+          {/* Second Column - Navigation */}
+          <div className="flex flex-col items-start">
+            <h5 className="text-lg font-semibold text-chocolate-500 mb-3">Quick Links</h5>
+            <ul className="space-y-2">
+              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">Newest Product</a></li>
+              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">Home</a></li>
+              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">Login/Signup</a></li>
+              <li><a className="text-sm text-neutral-700 hover:text-chocolate-500 transition duration-300" href="#">About Us</a></li>
+            </ul>
+          </div>
+
+          {/* Third Column - Contact Information */}
+          <div className="flex flex-col items-start">
+            <h5 className="text-lg font-semibold text-chocolate-500 mb-3">Contact Us</h5>
+            <ul className="space-y-2">
+              <li className="text-sm text-neutral-700">
+                <i className="fa fa-phone mx-2"></i> 01123456
+              </li>
+              <li className="text-sm text-neutral-700">
+                <i className="fa fa-envelope-open mx-2"></i> uschocolate@gmail.com
+              </li>
+              <li className="text-sm text-neutral-700">
+                <i className="fas fa-map-marker-alt mx-2"></i> Magaragama, Colombo, Sri Lanka
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
-    
-    <footer className="text-center justify-content-center align-items-center py-2 bg-light">
-  <div className="container">
-    <div className="row">
-      <div className="col">
-        <p className="mb-0 hnav">All rights reserved &copy; 2024</p>
-      </div>
-      <div className="col d-flex justify-content-center">
-        <ul className="list-unstyled d-flex">
-          <li className="nav-link mx-2">
-            <a href=""><i class="fab fa-facebook-f hnav"></i></a>
-          </li>
-          <li className="nav-link mx-2">
-            <a href=""><i class="fab fa-instagram hnav"></i></a>
-          </li>
-          <li className="nav-link mx-2">
-            <a href=""><i class="fab fa-youtube hnav"></i></a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</footer>
-
+      <footer className="bg-white text-black py-6 border-t border-neutral-200">
+        <div className="container mx-auto text-center">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm text-neutral-600">All rights reserved &copy; 2024</p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-neutral-600 hover:text-chocolate-500 transition duration-300">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" className="text-neutral-600 hover:text-chocolate-500 transition duration-300">
+                <i className="fab fa-instagram"></i>
+              </a>
+              <a href="#" className="text-neutral-600 hover:text-chocolate-500 transition duration-300">
+                <i className="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+          <div className="text-sm text-neutral-600">
+            <p>Made with love and chocolate</p>
+          </div>
+        </div>
+      </footer>
     </>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
