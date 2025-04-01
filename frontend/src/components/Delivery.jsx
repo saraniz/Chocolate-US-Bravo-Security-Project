@@ -1,4 +1,6 @@
-import React from "react"
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTruck, faGift, faGlobeAsia, faTemperatureLow, faShieldAlt, faClock } from "@fortawesome/free-solid-svg-icons";
 
 const Delivery = () => {
     return (
@@ -9,7 +11,7 @@ const Delivery = () => {
           
           <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
             <div className="text-4xl text-chocolate-500 mb-4">
-              <i className="fas fa-truck"></i>
+              <FontAwesomeIcon icon={faTruck} />
             </div>
             <h3 className="text-xl font-semibold mb-2">Island-wide Delivery</h3>
             <p className="text-gray-600">Fast delivery across Sri Lanka within 2 working days</p>
@@ -17,7 +19,7 @@ const Delivery = () => {
 
           <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
             <div className="text-4xl text-chocolate-500 mb-4">
-              <i className="fas fa-gift"></i>
+              <FontAwesomeIcon icon={faGift} />
             </div>
             <h3 className="text-xl font-semibold mb-2">Gift Wrapping</h3>
             <p className="text-gray-600">Beautiful gift wrapping service available for special occasions</p>
@@ -25,7 +27,7 @@ const Delivery = () => {
 
           <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
             <div className="text-4xl text-chocolate-500 mb-4">
-              <i className="fas fa-globe-asia"></i>
+              <FontAwesomeIcon icon={faGlobeAsia} />
             </div>
             <h3 className="text-xl font-semibold mb-2">International Shipping</h3>
             <p className="text-gray-600">We deliver our chocolates worldwide with special packaging</p>
@@ -48,31 +50,22 @@ const Delivery = () => {
             </p>
             <div className="flex flex-wrap justify-center lg:justify-start gap-4">
               <div className="flex items-center">
-                <i className="fas fa-temperature-low text-chocolate-500 mr-2"></i>
+                <FontAwesomeIcon icon={faTemperatureLow} className="text-chocolate-500 mr-2" />
                 <span>Temperature Controlled</span>
               </div>
               <div className="flex items-center">
-                <i className="fas fa-shield-alt text-chocolate-500 mr-2"></i>
+                <FontAwesomeIcon icon={faShieldAlt} className="text-chocolate-500 mr-2" />
                 <span>Secure Packaging</span>
               </div>
               <div className="flex items-center">
-                <i className="fas fa-clock text-chocolate-500 mr-2"></i>
+                <FontAwesomeIcon icon={faClock} className="text-chocolate-500 mr-2" />
                 <span>Real-time Tracking</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-    )
+    );
 }
 
-export default Delivery
-
-
-
-
-
-
-
-
+export default Delivery;

@@ -28,7 +28,7 @@ const Hero = () => {
               <div className="p-2">
                 <Card className="w-full bg-muted">
                   <CardContent
-                    className={`flex flex-col md:flex-row items-center justify-between mx-4 md:mx-48 gap-4 ${
+                    className={`flex flex-col md:flex-row items-centerjustify-between mx-4 md:mx-48 gap-4 ${
                       index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                     }`}
                   >
