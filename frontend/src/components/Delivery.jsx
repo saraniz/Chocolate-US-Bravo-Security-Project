@@ -10,7 +10,7 @@ const Delivery = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            <div className="text-4xl text-chocolate-500 mb-4">
+            <div className="text-4xl text-amber-900 mb-4">
               <FontAwesomeIcon icon={faTruck} />
             </div>
             <h3 className="text-xl font-semibold mb-2">Island-wide Delivery</h3>
@@ -18,7 +18,7 @@ const Delivery = () => {
           </div>
 
           <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            <div className="text-4xl text-chocolate-500 mb-4">
+            <div className="text-4xl text-amber-900 mb-4">
               <FontAwesomeIcon icon={faGift} />
             </div>
             <h3 className="text-xl font-semibold mb-2">Gift Wrapping</h3>
@@ -26,7 +26,7 @@ const Delivery = () => {
           </div>
 
           <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            <div className="text-4xl text-chocolate-500 mb-4">
+            <div className="text-4xl text-amber-900 mb-4">
               <FontAwesomeIcon icon={faGlobeAsia} />
             </div>
             <h3 className="text-xl font-semibold mb-2">International Shipping</h3>
@@ -44,7 +44,7 @@ const Delivery = () => {
             />
           </div>
           <div className="lg:w-1/2 text-center lg:text-left">
-            <h3 className="text-2xl font-bold mb-4">Premium Delivery Experience</h3>
+            <h3 className="text-2xl font-bold mb-4 text-amber-900">Premium Delivery Experience</h3>
             <p className="text-gray-600 mb-6">
               We ensure your chocolates arrive in perfect condition with our temperature-controlled packaging and professional delivery service. Whether it's a gift for a loved one or a treat for yourself, we handle your order with utmost care.
             </p>
