@@ -8,11 +8,11 @@ import React from 'react'
 const HomePage = () => {
   return (
     <div className='mx-auto max-w-screen-xl font-poppins'>
-      <Header />
+      
       <Hero />
       <PopularProducts />
       <Delivery/>
-      <Footer />
+      
     </div>
   )
 }

@@ -24,7 +24,7 @@ const Hero = () => {
           <Chocolate className="w-full opacity-90" />
         </div>
         
-        <div className="relative z-0 pt-80 pb-60">
+        <div className="relative z-0 pt-80 ">
           <div className="container mx-auto px-4">
             <div className="w-full flex flex-col items-center text-center space-y-16">
               <div className="max-w-3xl">
@@ -58,9 +58,9 @@ const Hero = () => {
                                 <img
                                   src={deal.image}
                                   alt={deal.title}
-                                  className="w-[230px] h-[230px] md:w-[300px] md:h-[300px] object-contain rounded-xl transform transition-transform duration-300 group-hover:scale-105"
+                                  className="w-[230px] h-[230px] md:w-[300px] md:h-[300px] object-contain rounded-xl transform transition-transform duration-300"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-amber-900/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                
                               </div>
 
                               {/* Text & Price Section */}
@@ -95,9 +95,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 z-10">
-          <Chocolate2 className="w-full opacity-90" />
-        </div>
+        
       </div>
     </div>
   );
