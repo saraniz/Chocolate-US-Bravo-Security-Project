@@ -33,7 +33,7 @@ const Cart = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 font-poppins">
         <div className="max-w-md mx-auto text-center">
           <div className="w-24 h-24 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <FontAwesomeIcon icon={faShoppingBag} className="text-4xl text-neutral-400" />

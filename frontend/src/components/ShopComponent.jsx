@@ -1,186 +1,164 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from "../components/ui/card";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart as faHeartSolid, faHeart as faHeartRegular, faSearch, faFilter, faSort, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faHeart, 
+  faFilter, 
+  faSearch, 
+  faShoppingCart,
+  faSort,
+  faSortUp,
+  faSortDown,
+  faStar
+} from '@fortawesome/free-solid-svg-icons';
 import { useFavorites } from '../context/FavoritesContext';
 import { useCart } from '../context/CartContext';
-
-const sampleProducts = [
-  {
-    _id: "1",
-    name: "Luxury Dark Chocolate Box",
-    category: "dark",
-    price: 29.99,
-    description: "A premium collection of handcrafted dark chocolates with exotic flavors from around the world.",
-    stock: 15,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1575377427642-087cf684f29d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        alt: "Luxury Dark Chocolate Box"
-      }
-    ],
-    createdAt: "2024-03-15T10:00:00Z"
-  },
-  {
-    _id: "2",
-    name: "Milk Chocolate Truffles",
-    category: "milk",
-    price: 24.99,
-    description: "Creamy milk chocolate truffles with a smooth, velvety texture and rich cocoa flavor.",
-    stock: 20,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        alt: "Milk Chocolate Truffles"
-      }
-    ],
-    createdAt: "2024-03-14T15:30:00Z"
-  },
-  {
-    _id: "3",
-    name: "White Chocolate Collection",
-    category: "white",
-    price: 27.99,
-    description: "Delicate white chocolate pieces with hints of vanilla and caramel, perfect for special occasions.",
-    stock: 10,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        alt: "White Chocolate Collection"
-      }
-    ],
-    createdAt: "2024-03-13T09:15:00Z"
-  },
-  {
-    _id: "4",
-    name: "Premium Gift Set",
-    category: "gift",
-    price: 49.99,
-    description: "An elegant gift box containing our finest selection of chocolates, perfect for any celebration.",
-    stock: 8,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        alt: "Premium Gift Set"
-      }
-    ],
-    createdAt: "2024-03-12T14:20:00Z"
-  },
-  {
-    _id: "5",
-    name: "Dark Chocolate Bars",
-    category: "dark",
-    price: 19.99,
-    description: "Artisanal dark chocolate bars with varying cocoa percentages for the true chocolate connoisseur.",
-    stock: 0,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        alt: "Dark Chocolate Bars"
-      }
-    ],
-    createdAt: "2024-03-11T11:45:00Z"
-  },
-  {
-    _id: "6",
-    name: "Milk Chocolate Gift Box",
-    category: "milk",
-    price: 34.99,
-    description: "A beautifully packaged selection of our finest milk chocolates, perfect for gifting.",
-    stock: 12,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        alt: "Milk Chocolate Gift Box"
-      }
-    ],
-    createdAt: "2024-03-10T16:30:00Z"
-  }
-];
+import { getProducts, searchProducts, getProductsByCategory } from '../services/productService';
 
 const ShopComponent = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [category, setCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('newest');
+  const [category, setCategory] = useState('All');
+  const [sort, setSort] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [notificationProduct, setNotificationProduct] = useState(null);
-  const { favorites, toggleFavorite } = useFavorites();
-  const { addToCart, totalItems } = useCart();
+  const [imageError, setImageError] = useState({});
+
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { addToCart, cart } = useCart();
 
   useEffect(() => {
-    console.log('Current cart total items:', totalItems);
-  }, [totalItems]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setProducts(sampleProducts);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
     fetchProducts();
   }, []);
 
-  const filteredProducts = products
-    .filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = category === 'all' || product.category === category;
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'price-low') return a.price - b.price;
-      if (sortBy === 'price-high') return b.price - a.price;
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getProducts();
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.error('Received non-array data:', data);
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error('Error in fetchProducts:', err);
+      setError('Failed to load products. Please try again later.');
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageError = (productId) => {
+    setImageError(prev => ({ ...prev, [productId]: true }));
+  };
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      let data;
+      if (searchTerm) {
+        data = await searchProducts(searchTerm);
+      } else if (category !== 'All') {
+        data = await getProductsByCategory(category);
+      } else {
+        data = await getProducts();
+      }
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.error('Received non-array data:', data);
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error('Error in handleSearch:', err);
+      setError('Failed to search products. Please try again later.');
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddToCart = (product) => {
-    console.log('Adding product to cart:', product);
     addToCart(product);
     setNotificationProduct(product);
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 3000);
+    setNotification(true);
+    setTimeout(() => {
+      setNotification(false);
+      setNotificationProduct(null);
+    }, 3000);
+  };
+
+  const handleCategoryChange = async (newCategory) => {
+    setCategory(newCategory);
+    try {
+      setLoading(true);
+      setError(null);
+      let data;
+      if (newCategory === 'All') {
+        data = await getProducts();
+      } else {
+        data = await getProductsByCategory(newCategory);
+      }
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.error('Received non-array data:', data);
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error('Error in handleCategoryChange:', err);
+      setError('Failed to filter products. Please try again later.');
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSortChange = (newSort) => {
+    setSort(newSort);
+    let sortedProducts = [...products];
+    switch (newSort) {
+      case 'price-low':
+        sortedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        sortedProducts.sort((a, b) => b.price - a.price);
+        break;
+      case 'name':
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+    setProducts(sortedProducts);
   };
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-chocolate-500"></div>
-        </div>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#8B4513]"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center text-red-500">
-          <p>{error}</p>
-          <Button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 bg-chocolate-500 hover:bg-chocolate-600"
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md">
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline"> {error}</span>
+          <button 
+            onClick={fetchProducts}
+            className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
           >
             Try Again
-          </Button>
+          </button>
         </div>
       </div>
     );
@@ -188,108 +166,147 @@ const ShopComponent = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Notification */}
-      {showNotification && notificationProduct && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-fade-in">
-          <FontAwesomeIcon icon={faShoppingCart} />
-          <span>
-            Added {notificationProduct.name} to cart!
-          </span>
-        </div>
-      )}
-
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-        <h1 className="text-2xl font-bold text-amber-900"></h1>
-        
-        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-          <Input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:w-64"
-          />
-          
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="dark">Dark Chocolate</SelectItem>
-              <SelectItem value="milk">Milk Chocolate</SelectItem>
-              <SelectItem value="white">White Chocolate</SelectItem>
-              <SelectItem value="gift">Gift Sets</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-            </SelectContent>
-          </Select>
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-[#8B4513] to-[#A0522D] text-white py-16 px-8 rounded-lg mb-8 text-center">
+        <h1 className="text-4xl font-bold mb-4">Premium Chocolate Collection</h1>
+        <p className="text-xl opacity-90 mb-8">Discover our handcrafted selection of fine chocolates</p>
+        <div className="max-w-2xl mx-auto bg-white/90 rounded-lg p-2">
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faSearch} className="text-[#8B4513] ml-4" />
+            <input
+              type="text"
+              placeholder="Search chocolates..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              className="w-full px-4 py-2 focus:outline-none bg-transparent"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredProducts.map((product) => (
-          <Card key={product._id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <div className="relative aspect-square">
+      {/* Filters Section */}
+      <div className="bg-gray-50 p-6 rounded-lg mb-8">
+        <div className="flex flex-wrap gap-4 items-center">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="bg-[#8B4513] hover:bg-[#A0522D] text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2"
+          >
+            <FontAwesomeIcon icon={faFilter} />
+            Filters
+          </button>
+          <button
+            onClick={() => handleSortChange('price-low')}
+            disabled={sort === 'price-low'}
+            className="border border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded-lg flex items-center gap-2"
+          >
+            <FontAwesomeIcon icon={faSort} />
+            Price: Low to High
+          </button>
+          <button
+            onClick={() => handleSortChange('price-high')}
+            disabled={sort === 'price-high'}
+            className="border border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded-lg flex items-center gap-2"
+          >
+            <FontAwesomeIcon icon={faSort} />
+            Price: High to Low
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className="mt-6">
+            <h3 className="text-lg font-bold text-gray-600 mb-3">Categories</h3>
+            <div className="flex flex-wrap gap-2">
+              {['All', 'Dark Chocolate', 'Milk Chocolate', 'White Chocolate', 'Nut Chocolate', 'Gift Box'].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => handleCategoryChange(cat)}
+                  className={`px-4 py-2 rounded-full ${
+                    category === cat 
+                      ? 'bg-[#8B4513] text-white' 
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Notification */}
+      {notification && notificationProduct && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+          {notificationProduct.name} added to cart!
+        </div>
+      )}
+
+      {/* Products Grid */}
+      <h2 className="text-2xl font-bold mb-4">Our Products</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {Array.isArray(products) && products.map((product) => (
+          <div 
+            key={product._id}
+            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+          >
+            <div className="relative h-48">
               <img
-                src={product.images[0]?.url || '/placeholder-image.jpg'}
-                alt={product.images[0]?.alt || product.name}
+                src={product.images[0]?.url || 'https://via.placeholder.com/300x200?text=Chocolate'}
+                alt={product.name}
                 className="w-full h-full object-cover"
+                onError={() => handleImageError(product._id)}
               />
               <button
                 onClick={() => toggleFavorite(product._id)}
-                className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition-colors duration-300"
+                className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full"
               >
                 <FontAwesomeIcon
-                  icon={favorites.includes(product._id) ? faHeartSolid : faHeartRegular}
-                  className={`text-xl ${favorites.includes(product._id) ? 'text-red-500' : 'text-neutral-400'}`}
+                  icon={faHeart}
+                  className={isFavorite(product._id) ? 'text-pink-500' : 'text-[#8B4513]'}
                 />
               </button>
               {product.stock === 0 && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="text-white font-medium">Out of Stock</span>
+                  <span className="text-white font-bold">Out of Stock</span>
                 </div>
               )}
             </div>
-            <CardContent className="p-4">
-              <h3 className="text-xl font-semibold text-amber-900 mb-2">{product.name}</h3>
-              <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-amber-800">${product.price}</span>
-                <Button 
-                  className="bg-amber-600 hover:bg-amber-700"
-                  disabled={product.stock === 0}
-                  onClick={() => handleAddToCart(product)}
-                >
-                  Add to Cart
-                </Button>
+            
+            <div className="p-4 flex flex-col h-[250px]">
+              <h3 className="text-lg font-bold truncate">{product.name}</h3>
+              <span className="inline-block bg-gray-100 text-[#8B4513] px-3 py-1 rounded-full text-sm my-2">
+                {product.category}
+              </span>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xl font-bold text-[#8B4513]">
+                  ${product.price.toFixed(2)}
+                </span>
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faStar} className="text-yellow-400" />
+                  <span className="ml-1 text-sm">{product.ratings || 'New'}</span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-gray-600 line-clamp-2 mb-4">
+                {product.description}
+              </p>
+              <button
+                onClick={() => handleAddToCart(product)}
+                disabled={product.stock === 0}
+                className="mt-auto bg-[#8B4513] hover:bg-[#A0522D] text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FontAwesomeIcon icon={faShoppingCart} />
+                Add to Cart
+              </button>
+            </div>
+          </div>
         ))}
       </div>
 
-      {filteredProducts.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">No products found matching your criteria.</p>
-          <Button 
-            onClick={() => {
-              setSearchTerm('');
-              setCategory('all');
-            }}
-            className="mt-4 bg-chocolate-500 hover:bg-chocolate-600"
-          >
-            Clear Filters
-          </Button>
+      {Array.isArray(products) && products.length === 0 && (
+        <div className="flex flex-col items-center justify-center min-h-[200px] p-8">
+          <h3 className="text-xl text-gray-600 mb-2">No products found</h3>
+          <p className="text-gray-500">Try adjusting your search or filters</p>
         </div>
       )}
     </div>
