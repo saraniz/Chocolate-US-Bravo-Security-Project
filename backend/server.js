@@ -6,6 +6,7 @@ import productRoutes from "./routes/productRoutes.js";
 import cors from "cors";
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import cookieParser from 'cookie-parser';
+import orderRoutes from './routes/orderRoutes.js'; 
 
 dotenv.config(); 
 
@@ -40,6 +41,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error handling middleware
 app.use(notFound);

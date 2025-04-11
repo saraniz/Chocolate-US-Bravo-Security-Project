@@ -12,6 +12,8 @@ import FavoritesPage from './pages/FavoritesPage';
 import AboutUs from './pages/AboutUs';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import MyOrders from './pages/MyOrders';
+import Settings from './pages/Settings';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -93,6 +95,20 @@ function App() {
                     <AboutUs />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
+              } />
+              <Route path="/my-orders" element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <MyOrders />
+                  </AuthenticatedLayout>
+              </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <AuthenticatedLayout>
+                    <Settings />
+                  </AuthenticatedLayout>
+              </ProtectedRoute>
               } />
 
               {/* Non-Protected Routes */}
