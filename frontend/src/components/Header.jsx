@@ -2,26 +2,32 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faUserCircle, faBars, faStore, faHeart, faInfoCircle, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-import { useCart } from '../context/CartContext';
+import {
+  faSearch,
+  faUserCircle,
+  faBars,
+  faStore,
+  faHeart,
+  faInfoCircle,
+  faShoppingCart,
+  faBoxOpen,
+  faCog,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext"; // Example auth context
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
   const { totalItems } = useCart();
+  const { user, logout } = useAuth(); // Adjust based on your auth logic
 
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  const isActive = (path) => location.pathname === path;
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   return (
     <>
@@ -36,36 +42,24 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex space-x-8">
-            <Link 
-              to="/shop" 
-              className={`text-md transition duration-300 flex justify-center items-center ${
-                isActive('/shop') 
-                  ? 'text-chocolate-500 font-medium' 
-                  : 'text-neutral-700 hover:text-chocolate-500'
-              }`}
-            >
-              <FontAwesomeIcon icon={faStore} className="mr-2" /> Shop
-            </Link>
-            <Link 
-              to="/favorites" 
-              className={`text-md transition duration-300 flex items-center ${
-                isActive('/favorites') 
-                  ? 'text-chocolate-500 font-medium' 
-                  : 'text-neutral-700 hover:text-chocolate-500'
-              }`}
-            >
-              <FontAwesomeIcon icon={faHeart} className="mr-2" /> Favorites
-            </Link>
-            <Link 
-              to="/about" 
-              className={`text-md transition duration-300 flex items-center ${
-                isActive('/about') 
-                  ? 'text-chocolate-500 font-medium' 
-                  : 'text-neutral-700 hover:text-chocolate-500'
-              }`}
-            >
-              <FontAwesomeIcon icon={faInfoCircle} className="mr-2" /> About Us
-            </Link>
+            {[
+              { to: "/shop", icon: faStore, label: "Shop" },
+              { to: "/favorites", icon: faHeart, label: "Favorites" },
+              { to: "/about", icon: faInfoCircle, label: "About Us" },
+            ].map(({ to, icon, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`text-md transition duration-300 flex items-center ${
+                  isActive(to)
+                    ? "text-chocolate-500 font-medium"
+                    : "text-neutral-700 hover:text-chocolate-500"
+                }`}
+              >
+                <FontAwesomeIcon icon={icon} className="mr-2" />
+                {label}
+              </Link>
+            ))}
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
@@ -79,7 +73,11 @@ const Header = () => {
                 <FontAwesomeIcon icon={faSearch} />
               </button>
             </div>
-            <Link to="/cart" className="text-chocolate-500 hover:text-chocolate-600 px-2 transition duration-300 relative">
+
+            <Link
+              to="/cart"
+              className="text-chocolate-500 hover:text-chocolate-600 px-2 transition duration-300 relative"
+            >
               <FontAwesomeIcon icon={faShoppingCart} className="text-xl" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-chocolate-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -87,11 +85,49 @@ const Header = () => {
                 </span>
               )}
             </Link>
-            <Link to="/login">
-              <Button variant="default" className="">
-                <FontAwesomeIcon icon={faUserCircle} className="mr-2" /> Login
-              </Button>
-            </Link>
+
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center text-chocolate-500 hover:text-chocolate-600 font-medium transition cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={faUserCircle} className="mr-2 text-xl" />
+                  {user.name}
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-lg z-50">
+                    <Link
+                      to="/my-orders"
+                      className="flex items-center px-4 py-2 text-sm hover:bg-neutral-100 text-neutral-700"
+                    >
+                      <FontAwesomeIcon icon={faBoxOpen} className="mr-2" />
+                      My Orders
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="flex items-center px-4 py-2 text-sm hover:bg-neutral-100 text-neutral-700"
+                    >
+                      <FontAwesomeIcon icon={faCog} className="mr-2" />
+                      Settings
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="flex items-center w-full px-4 py-2 text-sm hover:bg-neutral-100 text-neutral-700"
+                    >
+                      <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login">
+                <Button variant="default">
+                  <FontAwesomeIcon icon={faUserCircle} className="mr-2" /> Login
+                </Button>
+              </Link>
+            )}
           </div>
 
           <button
@@ -103,38 +139,27 @@ const Header = () => {
         </nav>
       </div>
 
+      {/* Mobile Menu */}
       <div className={`md:hidden bg-white transition-all duration-300 ${menuOpen ? "max-h-screen" : "max-h-0 overflow-hidden"}`}>
         <nav className="flex flex-col px-4 py-4 space-y-4">
-          <Link 
-            to="/shop" 
-            className={`text-lg transition duration-300 flex items-center ${
-              isActive('/shop') 
-                ? 'text-chocolate-500 font-medium' 
-                : 'text-neutral-700 hover:text-chocolate-500'
-            }`}
-          >
-            <FontAwesomeIcon icon={faStore} className="mr-2" /> Shop
-          </Link>
-          <Link 
-            to="/favorites" 
-            className={`text-lg transition duration-300 flex items-center ${
-              isActive('/favorites') 
-                ? 'text-chocolate-500 font-medium' 
-                : 'text-neutral-700 hover:text-chocolate-500'
-            }`}
-          >
-            <FontAwesomeIcon icon={faHeart} className="mr-2" /> Favorites
-          </Link>
-          <Link 
-            to="/about" 
-            className={`text-lg transition duration-300 flex items-center ${
-              isActive('/about') 
-                ? 'text-chocolate-500 font-medium' 
-                : 'text-neutral-700 hover:text-chocolate-500'
-            }`}
-          >
-            <FontAwesomeIcon icon={faInfoCircle} className="mr-2" /> About Us
-          </Link>
+          {[
+            { to: "/shop", icon: faStore, label: "Shop" },
+            { to: "/favorites", icon: faHeart, label: "Favorites" },
+            { to: "/about", icon: faInfoCircle, label: "About Us" },
+          ].map(({ to, icon, label }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`text-lg transition duration-300 flex items-center ${
+                isActive(to)
+                  ? "text-chocolate-500 font-medium"
+                  : "text-neutral-700 hover:text-chocolate-500"
+              }`}
+            >
+              <FontAwesomeIcon icon={icon} className="mr-2" />
+              {label}
+            </Link>
+          ))}
 
           <div className="flex flex-col space-y-4 pt-4 border-t border-neutral-200">
             <div className="relative">
@@ -147,18 +172,42 @@ const Header = () => {
                 <FontAwesomeIcon icon={faSearch} />
               </button>
             </div>
+
             <div className="flex items-center justify-between">
-              <Link to="/cart" className="text-lg text-neutral-700 hover:text-chocolate-500 transition duration-300 flex items-center relative">
-                <FontAwesomeIcon icon={faShoppingCart} className="mr-2" /> Cart
+              <Link
+                to="/cart"
+                className="text-lg text-neutral-700 hover:text-chocolate-500 transition duration-300 flex items-center relative"
+              >
+                <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                Cart
                 {totalItems > 0 && (
                   <span className="absolute -top-2 -right-2 bg-chocolate-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                     {totalItems}
                   </span>
                 )}
               </Link>
-              <Link to="/login" className="text-lg text-neutral-700 hover:text-chocolate-500 transition duration-300 flex items-center">
-                <FontAwesomeIcon icon={faUserCircle} className="mr-2" /> Login
-              </Link>
+
+              {user ? (
+                <div className="flex flex-col space-y-1 text-neutral-700 text-lg">
+                  <span className="font-medium">{user.name}</span>
+                  <Link to="/orders" className="hover:text-chocolate-500">
+                    <FontAwesomeIcon icon={faBoxOpen} className="mr-1" /> Orders
+                  </Link>
+                  <Link to="/settings" className="hover:text-chocolate-500">
+                    <FontAwesomeIcon icon={faCog} className="mr-1" /> Settings
+                  </Link>
+                  <button onClick={logout} className="hover:text-chocolate-500 flex items-center">
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-1" /> Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-lg text-neutral-700 hover:text-chocolate-500 transition duration-300 flex items-center"
+                >
+                  <FontAwesomeIcon icon={faUserCircle} className="mr-2" /> Login
+                </Link>
+              )}
             </div>
           </div>
         </nav>
