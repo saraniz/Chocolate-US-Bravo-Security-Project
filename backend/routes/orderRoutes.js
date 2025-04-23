@@ -16,3 +16,5 @@ router.route('/:id').get(protect, getOrderById);
 
 // Get all orders (admin only)
 router.route('/').get(protect, admin, getOrders);
+
+export default router;
