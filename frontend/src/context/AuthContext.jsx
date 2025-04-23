@@ -18,36 +18,44 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const initializeAuth = () => {
-      const currentUser = authService.getCurrentUser();
-      setUser(currentUser);
-      setLoading(false);
+    const initializeAuth = async () => {
+      try {
+        const currentUser = await authService.getCurrentUser();
+        setUser(currentUser);
+      } catch (err) {
+        console.error('Failed to initialize auth:', err);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
-
+  
     initializeAuth();
   }, []);
 
   const login = async (email, password) => {
     try {
-      const data = await authService.login(email, password);
-      setUser(data.user);
+      const userData = await authService.login(email, password);
+      console.log("Logged in user data:", userData);
+      setUser(userData); // ✅ not userData.user
       navigate('/');
       return { success: true };
     } catch (error) {
       return { success: false, error: error.toString() };
     }
   };
-
+  
   const register = async (userData) => {
     try {
-      const data = await authService.register(userData);
-      setUser(data.user);
+      const newUser = await authService.register(userData);
+      setUser(newUser); // ✅ not newUser.user
       navigate('/');
       return { success: true };
     } catch (error) {
       return { success: false, error: error.toString() };
     }
   };
+  
 
   const logout = () => {
     authService.logout();

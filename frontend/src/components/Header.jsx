@@ -15,14 +15,14 @@ import {
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext"; // Example auth context
+import { useAuth } from "../context/AuthContext"; 
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
   const { totalItems } = useCart();
-  const { user, logout } = useAuth(); // Adjust based on your auth logic
+  const { user, logout } = useAuth(); 
 
   const isActive = (path) => location.pathname === path;
 
