@@ -17,8 +17,8 @@ const router = express.Router();
 // Get all products
 router.get('/', getProducts);
 
-// Get product by ID
-router.get('/:id', getProductById);
+// Get top products
+router.get('/top', getTopProducts);
 
 // Get products by category
 router.get('/category/:category', getProductsByCategory);
@@ -26,12 +26,15 @@ router.get('/category/:category', getProductsByCategory);
 // Search products
 router.get('/search', searchProducts);
 
+// Get product by ID - should be after all specific routes
+router.get('/:id', getProductById);
+
+// Product CRUD
 router.route('/')
   .post(protect, admin, createProduct);
 
-router.route('/top').get(getTopProducts);
-
-router.route('/:id/reviews').post(protect, createProductReview);
+router.route('/:id/reviews')
+  .post(protect, createProductReview);
 
 router.route('/:id')
   .put(protect, admin, updateProduct)

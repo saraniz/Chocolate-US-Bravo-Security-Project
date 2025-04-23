@@ -24,12 +24,18 @@ export const getProducts = async () => {
   try {
     console.log('Fetching products from:', API_URL);
     const response = await api.get('/');
-    console.log('Products fetched successfully:', response.data);
-    
-    // Handle paginated response
+    console.log('Full API response:', response);
+    console.log('Response data:', response.data);
+    // Handle both paginated and non-paginated responses
     if (response.data && response.data.products) {
-      return response.data.products;
+      console.log('Products:', response.data.products);
+      return Array.isArray(response.data.products) ? response.data.products : [];
     }
+    if (Array.isArray(response.data)) {
+      console.log('Direct array response:', response.data);
+      return response.data;
+    }
+    console.log('No valid products found in response');
     return [];
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -41,6 +47,7 @@ export const getProducts = async () => {
 export const getProductById = async (id) => {
   try {
     const response = await api.get(`/${id}`);
+    console.log('Product by ID:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching product:', error);
@@ -52,8 +59,12 @@ export const getProductById = async (id) => {
 export const getProductsByCategory = async (category) => {
   try {
     const response = await api.get(`/category/${category}`);
+    console.log('Category response:', response.data);
     if (response.data && response.data.products) {
-      return response.data.products;
+      return Array.isArray(response.data.products) ? response.data.products : [];
+    }
+    if (Array.isArray(response.data)) {
+      return response.data;
     }
     return [];
   } catch (error) {
@@ -66,12 +77,16 @@ export const getProductsByCategory = async (category) => {
 export const searchProducts = async (keyword) => {
   try {
     const response = await api.get(`/search?keyword=${keyword}`);
+    console.log('Search response:', response.data);
     if (response.data && response.data.products) {
-      return response.data.products;
+      return Array.isArray(response.data.products) ? response.data.products : [];
+    }
+    if (Array.isArray(response.data)) {
+      return response.data;
     }
     return [];
   } catch (error) {
     console.error('Error searching products:', error);
     return [];
   }
-}; 
+};
