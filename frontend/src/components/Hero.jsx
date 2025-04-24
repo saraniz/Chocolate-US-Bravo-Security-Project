@@ -24,7 +24,7 @@ const Hero = () => {
           <Chocolate className="hidden md:block w-full opacity-90" />
         </div>
         
-        <div className="relative z-0 pt-5 md:pt-80 ">
+        <div className="relative  pt-5 md:pt-80 ">
           <div className="container mx-auto px-4">
             <div className="w-full flex flex-col items-center text-center space-y-16">
               <div className="max-w-3xl">
