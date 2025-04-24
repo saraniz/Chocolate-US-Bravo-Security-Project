@@ -1,102 +1,119 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import User from '../models/userModel.js';
+import User from '../models/User.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+import generateToken from '../utils/generateToken.js';
 
-let tokenBlacklist = [];
+// @desc    Auth user & get token
+// @route   POST /api/auth/login
+// @access  Public
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-};
+  const user = await User.findOne({ email });
 
+  if (user && (await user.matchPassword(password))) {
+    generateToken(res, user._id);
 
-//Registering User
-const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
-  
-    try {
-      const userExists = await User.findOne({ email });
-      if (userExists) {
-        return res.status(400).json({ message: 'User already exists' });
-      }
-  
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-  
-      const newUser = new User({
-        name,
-        email,
-        password: hashedPassword,
-      });
-  
-      const savedUser = await newUser.save();
-  
-      if (savedUser) {
-        const token = generateToken(savedUser._id);
-        
-        res.setHeader('Authorization', `Bearer ${token}`);
-  
-        return res.status(201).json({
-          message: 'Registration successful'
-        });
-      } else {
-        return res.status(400).json({ message: 'Failed to save user data' });
-      }
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Server error' });
-    }
-};
-  
-  
-//Login an existing User
-const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-  
-    try {
-      
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: 'Invalid email or password' });
-      }
-  
-     
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(400).json({ message: 'Invalid email or password' });
-      }
-      const token = generateToken(user._id);
-      res.setHeader('Authorization', `Bearer ${token}`);
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(401);
+    throw new Error('Invalid email or password');
+  }
+});
 
-      return res.json({
-        message: 'Login successful'
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Server error' });
-    }
-};
-  
+// @desc    Register user
+// @route   POST /api/auth/register
+// @access  Public
+export const register = asyncHandler(async (req, res) => {
+  const { name, email, password } = req.body;
 
+  const userExists = await User.findOne({ email });
 
-//Logging out an logged in User
-const logoutUser = (req, res) => {
-  const token = req.headers.authorization?.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await User.create({
+    name,
+    email,
+    password,
+  });
 
-    // Add token to blacklist
-    tokenBlacklist.push(token);
+  if (user) {
+    generateToken(res, user._id);
 
-    res.json({ message: 'Logout successful. Token is invalidated.' });
-  } catch (error) {
-    console.error('Token verification failed:', error);
-    return res.status(403).json({ message: 'Invalid or expired token' });
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(400);
+    throw new Error('Invalid user data');
   }
-};
+});
 
-export { loginUser, registerUser, logoutUser };
+// @desc    Logout user / clear cookie
+// @route   POST /api/auth/logout
+// @access  Private
+export const logout = asyncHandler(async (req, res) => {
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json({ message: 'Logged out successfully' });
+});
+
+// @desc    Get user profile
+// @route   GET /api/auth/profile
+// @access  Private
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+export const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
