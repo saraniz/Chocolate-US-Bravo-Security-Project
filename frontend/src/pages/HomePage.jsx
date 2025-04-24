@@ -7,7 +7,7 @@ import React from 'react'
 
 const HomePage = () => {
   return (
-    <div className='mx-auto max-w-screen-xl font-poppins'>
+    <div className='mx-5 md:mx-auto max-w-screen-xl font-poppins '>
       
       <Hero />
       <PopularProducts />

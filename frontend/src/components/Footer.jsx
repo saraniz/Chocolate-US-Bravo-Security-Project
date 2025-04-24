@@ -18,7 +18,7 @@ const Footer = () => {
           <div className="flex flex-col items-start">
             <h5 className="text-lg font-semibold text-chocolate-500 mb-3">Quick Links</h5>
             <ul className="space-y-2">
-              <div className='flex md:block'>
+              <div className='flex md:space-y-2 md:block'>
                 <li>
                 <Link className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/newest-product">Newest Product</Link>
               </li>
@@ -28,7 +28,7 @@ const Footer = () => {
               </li>
               </div>
               
-              <div className='flex md:block'>
+              <div className='flex md:space-y-2 md:block'>
                 <li>
                 <Link className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/login">Login/Signup</Link>
               </li>

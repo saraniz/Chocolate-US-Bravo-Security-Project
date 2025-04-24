@@ -4,7 +4,7 @@ import { faTruck, faGift, faGlobeAsia, faTemperatureLow, faShieldAlt, faClock } 
 
 const Delivery = () => {
     return (
-        <div className="my-24 px-4">
+        <div className="my-24">
         <h2 className="text-3xl font-bold text-center mb-12">Our Delivery Services</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -40,7 +40,7 @@ const Delivery = () => {
             <img 
               src="/src/img/2.jpg" 
               alt="Delivery Service" 
-              className="rounded-lg shadow-md w-full h-auto object-cover"
+              className="rounded-lg shadow-md w-full h-[500px] object-cover"
             />
           </div>
           <div className="lg:w-1/2 text-center lg:text-left">

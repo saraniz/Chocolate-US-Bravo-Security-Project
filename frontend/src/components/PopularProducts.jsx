@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 
 const PopularProducts = () => {
   return (
-    <div className='my-48 mx-10 md:mx-32'>
+    <div className='my-48'>
       <h2 className="text-3xl font-bold text-center mb-8 text-amber-900">Popular Products</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {CHOCOLATE_LIST.map((chocolate) => (
