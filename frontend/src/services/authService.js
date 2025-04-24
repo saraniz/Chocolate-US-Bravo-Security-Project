@@ -52,8 +52,9 @@ export const logout = async () => {
 
 export const getCurrentUser = () => {
   const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
+  return user ? JSON.parse(user) : null; // user object directly
 };
+
 
 export const isAuthenticated = () => {
   const user = getCurrentUser();

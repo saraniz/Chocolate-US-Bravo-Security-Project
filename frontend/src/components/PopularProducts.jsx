@@ -13,7 +13,7 @@ const PopularProducts = () => {
   return (
     <div className='my-48 mx-10 md:mx-32'>
       <h2 className="text-3xl font-bold text-center mb-8 text-amber-900">Popular Products</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {CHOCOLATE_LIST.map((chocolate) => (
           <Link to={`/product/${chocolate.id}`} key={chocolate.id}>
             <Card className="hover:shadow-lg transition duration-300 cursor-pointer">
