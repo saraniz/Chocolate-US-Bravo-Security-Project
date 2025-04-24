@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faHeart, 
-  faFilter, 
-  faSearch, 
+import {
+  faHeart,
+  faFilter,
+  faSearch,
   faShoppingCart,
   faSort,
-  faSortUp,
-  faSortDown,
   faStar
 } from '@fortawesome/free-solid-svg-icons';
 import { useFavorites } from '../context/FavoritesContext';
@@ -27,7 +25,12 @@ const ShopComponent = () => {
   const [imageError, setImageError] = useState({});
 
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
-  const { addToCart, cart } = useCart();
+  const { addToCart } = useCart();
+
+  // Log products state changes for debugging
+  useEffect(() => {
+    console.log('Products state updated:', products);
+  }, [products]);
 
   useEffect(() => {
     fetchProducts();
@@ -38,8 +41,9 @@ const ShopComponent = () => {
       setLoading(true);
       setError(null);
       const data = await getProducts();
+      console.log('Fetched products:', data);
       if (Array.isArray(data)) {
-        setProducts(data);
+        setProducts([...data]); // Ensure new array to trigger re-render
       } else {
         console.error('Received non-array data:', data);
         setProducts([]);
@@ -69,8 +73,9 @@ const ShopComponent = () => {
       } else {
         data = await getProducts();
       }
+      console.log('Search results:', data);
       if (Array.isArray(data)) {
-        setProducts(data);
+        setProducts([...data]);
       } else {
         console.error('Received non-array data:', data);
         setProducts([]);
@@ -105,8 +110,9 @@ const ShopComponent = () => {
       } else {
         data = await getProductsByCategory(newCategory);
       }
+      console.log('Category products:', data);
       if (Array.isArray(data)) {
-        setProducts(data);
+        setProducts([...data]);
       } else {
         console.error('Received non-array data:', data);
         setProducts([]);
@@ -125,18 +131,18 @@ const ShopComponent = () => {
     let sortedProducts = [...products];
     switch (newSort) {
       case 'price-low':
-        sortedProducts.sort((a, b) => a.price - b.price);
+        sortedProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
         break;
       case 'price-high':
-        sortedProducts.sort((a, b) => b.price - a.price);
+        sortedProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
         break;
       case 'name':
-        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        sortedProducts.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         break;
       default:
         break;
     }
-    setProducts(sortedProducts);
+    setProducts([...sortedProducts]);
   };
 
   if (loading) {
@@ -153,7 +159,7 @@ const ShopComponent = () => {
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md">
           <strong className="font-bold">Error!</strong>
           <span className="block sm:inline"> {error}</span>
-          <button 
+          <button
             onClick={fetchProducts}
             className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
           >
@@ -222,8 +228,8 @@ const ShopComponent = () => {
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
                   className={`px-4 py-2 rounded-full ${
-                    category === cat 
-                      ? 'bg-[#8B4513] text-white' 
+                    category === cat
+                      ? 'bg-[#8B4513] text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-100'
                   }`}
                 >
@@ -244,69 +250,68 @@ const ShopComponent = () => {
 
       {/* Products Grid */}
       <h2 className="text-2xl font-bold mb-4">Our Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {Array.isArray(products) && products.map((product) => (
-          <div 
-            key={product._id}
-            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
-          >
-            <div className="relative h-48">
-              <img
-                src={product.images[0]?.url || 'https://via.placeholder.com/300x200?text=Chocolate'}
-                alt={product.name}
-                className="w-full h-full object-cover"
-                onError={() => handleImageError(product._id)}
-              />
-              <button
-                onClick={() => toggleFavorite(product._id)}
-                className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full"
-              >
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className={isFavorite(product._id) ? 'text-pink-500' : 'text-[#8B4513]'}
+      {products.length === 0 ? (
+        <p className="text-center text-gray-600">No products found.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {products.map((product) => (
+            <div
+              key={product._id}
+              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
+            >
+              <div className="relative h-48">
+                <img
+                  src={product.images?.[0]?.url || 'https://via.placeholder.com/300x200?text=Chocolate'}
+                  alt={product.name || 'Product'}
+                  className="w-full h-full object-cover"
+                  onError={() => handleImageError(product._id)}
                 />
-              </button>
-              {product.stock === 0 && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="text-white font-bold">Out of Stock</span>
-                </div>
-              )}
-            </div>
-            
-            <div className="p-4 flex flex-col h-[250px]">
-              <h3 className="text-lg font-bold truncate">{product.name}</h3>
-              <span className="inline-block bg-gray-100 text-[#8B4513] px-3 py-1 rounded-full text-sm my-2">
-                {product.category}
-              </span>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl font-bold text-[#8B4513]">
-                  ${product.price.toFixed(2)}
-                </span>
-                <div className="flex items-center">
-                  <FontAwesomeIcon icon={faStar} className="text-yellow-400" />
-                  <span className="ml-1 text-sm">{product.ratings || 'New'}</span>
-                </div>
+                <button
+                  onClick={() => toggleFavorite(product._id)}
+                  className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full"
+                >
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className={isFavorite(product._id) ? 'text-pink-500' : 'text-[#8B4513]'}
+                  />
+                </button>
+                {product.stock === 0 && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="text-white font-bold">Out of Stock</span>
+                  </div>
+                )}
               </div>
-              <p className="text-gray-600 line-clamp-2 mb-4">
-                {product.description}
-              </p>
-              <button
-                onClick={() => handleAddToCart(product)}
-                disabled={product.stock === 0}
-                className="mt-auto bg-[#8B4513] hover:bg-[#A0522D] text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FontAwesomeIcon icon={faShoppingCart} />
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {Array.isArray(products) && products.length === 0 && (
-        <div className="flex flex-col items-center justify-center min-h-[200px] p-8">
-          <h3 className="text-xl text-gray-600 mb-2">No products found</h3>
-          <p className="text-gray-500">Try adjusting your search or filters</p>
+              <div className="p-4 flex flex-col h-[250px]">
+                <h3 className="text-lg font-bold truncate">{product.name || 'Unnamed Product'}</h3>
+                <span className="inline-block bg-gray-100 text-[#8B4513] px-3 py-1 rounded-full text-sm my-2">
+                  {product.category || 'Unknown'}
+                </span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xl font-semibold">${product.price?.toFixed(2) || '0.00'}</span>
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, index) => (
+                      <FontAwesomeIcon
+                        key={index}
+                        icon={faStar}
+                        className={index < (product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className={`w-full bg-[#8B4513] text-white font-bold py-2 px-4 rounded-lg mt-auto ${
+                    product.stock === 0 ? 'bg-gray-400' : 'hover:bg-[#A0522D]'
+                  }`}
+                  disabled={product.stock === 0}
+                >
+                  <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
