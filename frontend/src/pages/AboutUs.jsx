@@ -35,7 +35,7 @@ const AboutUs = () => {
       </div>
 
       
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className=" mx-auto px-4 md:px-20 py-12">
         
         <section className="mb-16">
           <div className="grid md:grid-cols-2 gap-12 items-center">
