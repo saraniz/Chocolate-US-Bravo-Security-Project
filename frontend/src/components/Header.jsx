@@ -36,7 +36,7 @@ const Header = () => {
   return (
     <>
       <div className="bg-white sticky top-0 z-50 shadow-sm">
-        <nav className="mx-auto p-4 flex items-center justify-between">
+        <nav className="mx-auto md:px-20 p-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link to="/">
               <h2 className="text-3xl font-semibold text-chocolate-500 hover:text-chocolate-700 transition duration-300">

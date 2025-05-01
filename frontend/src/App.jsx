@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import MyOrders from './pages/MyOrders';
 import Settings from './pages/Settings';
+import Product from './pages/Product';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -64,7 +65,7 @@ function App() {
               <Route path="/" element={
                 <ProtectedRoute>
                   <AuthenticatedLayout>
-                    <HomePage />
+                    <Product />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               } />
