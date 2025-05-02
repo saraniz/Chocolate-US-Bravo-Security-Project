@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,9 +29,16 @@ const Header = () => {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-  const toggleDropdownmobile = () => setIsDropdownOpenmobile(!isDropdownOpenmobile);
+  const toggleDropdownMobile = () =>
+    setIsDropdownOpenmobile((prev) => !prev);
   const closeDropdown = () => setIsDropdownOpen(false);
   const closeDropdownMobile = () => setIsDropdownOpenmobile(false);
+
+  useEffect(() => {
+    setIsDropdownOpen(false);
+    setIsDropdownOpenmobile(false);
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <>
@@ -80,7 +87,7 @@ const Header = () => {
 
             <Link
               to="/cart"
-              className="text-chocolate-500 hover:text-chocolate-600 px-2 transition duration-300 relative"
+              className="relative text-chocolate-500 hover:text-chocolate-600 px-2 transition duration-300"
             >
               <FontAwesomeIcon icon={faShoppingCart} className="text-xl" />
               {totalItems > 0 && (
@@ -155,7 +162,7 @@ const Header = () => {
         }`}
       >
         <nav className="flex flex-col px-4 py-4 space-y-4">
-          <div className="flex space-x-5">
+          <div className="flex flex-row items-center  space-x-5">
             {[
               { to: "/shop", icon: faStore, label: "Shop" },
               { to: "/favorites", icon: faHeart, label: "Favorites" },
@@ -172,16 +179,16 @@ const Header = () => {
                 }`}
               >
                 <FontAwesomeIcon icon={icon} className="mr-2" />
-                {label}
+                {label}|
               </Link>
             ))}
           </div>
 
-          <div className="flex justify-between items-center space-y-4 pt-4 border-t border-neutral-200">
+          <div className="flex justify-between items-center pt-4 border-t border-neutral-200">
             <div className="relative">
               <input
                 type="text"
-                className="px-4 py-2 w-[250px] border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-chocolate-500"
+                className="px-4 py-2 w-80 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-chocolate-500"
                 placeholder="Search products..."
               />
               <button className="absolute right-3 top-2 text-chocolate-500 hover:text-chocolate-600">
@@ -190,17 +197,17 @@ const Header = () => {
             </div>
 
             {user ? (
-              <div>
+              <div className="relative">
                 <button
-                  onClick={toggleDropdownmobile}
+                  onClick={toggleDropdownMobile}
                   className="flex items-center text-chocolate-500 hover:text-chocolate-600 font-medium transition cursor-pointer"
                 >
-                  <FontAwesomeIcon icon={faUserCircle} className="mb-3 text-3xl" />
+                  <FontAwesomeIcon icon={faUserCircle} className="text-3xl" />
                 </button>
 
                 {isDropdownOpenmobile && (
-                  <div className="absolute bg-black z-40 right-0 p-1 rounded flex flex-col space-y-1 text-white text-lg">
-                    <Link to="/orders" onClick={closeDropdownMobile} className="hover:text-chocolate-500">
+                  <div className="absolute bg-black z-40 right-0 w-30 p-2 rounded flex flex-col mt-4 space-y-2 text-white text-lg">
+                    <Link to="/my-orders" onClick={closeDropdownMobile} className="hover:text-chocolate-500">
                       <FontAwesomeIcon icon={faBoxOpen} className="mr-1" /> Orders
                     </Link>
                     <Link to="/settings" onClick={closeDropdownMobile} className="hover:text-chocolate-500">
@@ -209,7 +216,7 @@ const Header = () => {
                     <Link
                       to="/cart"
                       onClick={closeDropdownMobile}
-                      className="text-lg hover:text-chocolate-500 transition duration-300 flex items-center relative"
+                      className="relative text-lg hover:text-chocolate-500 transition duration-300 flex items-center"
                     >
                       <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
                       Cart

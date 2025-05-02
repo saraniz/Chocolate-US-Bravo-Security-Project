@@ -65,7 +65,7 @@ function App() {
               <Route path="/" element={
                 <ProtectedRoute>
                   <AuthenticatedLayout>
-                    <Product />
+                    <HomePage />
                   </AuthenticatedLayout>
                 </ProtectedRoute>
               } />
