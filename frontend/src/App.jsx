@@ -15,6 +15,8 @@ import RegisterPage from './pages/RegisterPage';
 import MyOrders from './pages/MyOrders';
 import Settings from './pages/Settings';
 import Product from './pages/Product';
+import Dashboard from './admin/Dashboard';
+import AddProduct from './admin/AddProduct';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -118,9 +120,14 @@ function App() {
                   <LoginPage />
                 </NonAuthenticatedLayout>
               } />
-              <Route path="/register" element={
+              <Route path="/admin" element={
                 <NonAuthenticatedLayout>
-                  <RegisterPage />
+                  <Dashboard />
+                </NonAuthenticatedLayout>
+              } />
+              <Route path="/admin/add" element={
+                <NonAuthenticatedLayout>
+                  <AddProduct />
                 </NonAuthenticatedLayout>
               } />
             </Routes>
