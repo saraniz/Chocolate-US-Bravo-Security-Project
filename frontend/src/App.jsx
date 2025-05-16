@@ -1,22 +1,24 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { CartProvider } from './context/CartContext';
-import { FavoritesProvider } from './context/FavoritesContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import Shop from './pages/Shop';
-import Cart from './pages/Cart';
-import FavoritesPage from './pages/FavoritesPage';
-import AboutUs from './pages/AboutUs';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import MyOrders from './pages/MyOrders';
-import Settings from './pages/Settings';
-import Product from './pages/Product';
-import Dashboard from './admin/Dashboard';
-import AddProduct from './admin/AddProduct';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { CartProvider } from "./context/CartContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import Shop from "./pages/Shop";
+import Cart from "./pages/Cart";
+import FavoritesPage from "./pages/FavoritesPage";
+import AboutUs from "./pages/AboutUs";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import MyOrders from "./pages/MyOrders";
+import Settings from "./pages/Settings";
+import Product from "./pages/Product";
+import Dashboard from "./admin/Dashboard";
+import AddProduct from "./admin/AddProduct";
+import Overview from "./admin/Overview";
+import Admin from "./admin/Admin";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -40,20 +42,14 @@ const AuthenticatedLayout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen font-poppins">
       <Header />
-      <main className="flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow">{children}</main>
       <Footer />
     </div>
   );
 };
 
 const NonAuthenticatedLayout = ({ children }) => {
-  return (
-    <div className="min-h-screen font-poppins">
-      {children}
-    </div>
-  );
+  return <div className="min-h-screen font-poppins">{children}</div>;
 };
 
 function App() {
@@ -64,72 +60,93 @@ function App() {
           <CartProvider>
             <Routes>
               {/* Protected Routes */}
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <HomePage />
-                  </AuthenticatedLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/shop" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <Shop />
-                  </AuthenticatedLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/cart" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <Cart />
-                  </AuthenticatedLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/favorites" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <FavoritesPage />
-                  </AuthenticatedLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/about" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <AboutUs />
-                  </AuthenticatedLayout>
-                </ProtectedRoute>
-              } />
-              <Route path="/my-orders" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <MyOrders />
-                  </AuthenticatedLayout>
-              </ProtectedRoute>
-              } />
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <AuthenticatedLayout>
-                    <Settings />
-                  </AuthenticatedLayout>
-              </ProtectedRoute>
-              } />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <HomePage />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shop"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <Shop />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <Cart />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/favorites"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <FavoritesPage />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <AboutUs />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <MyOrders />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <Settings />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Non-Protected Routes */}
-              <Route path="/login" element={
-                <NonAuthenticatedLayout>
-                  <LoginPage />
-                </NonAuthenticatedLayout>
-              } />
-              <Route path="/admin" element={
-                <NonAuthenticatedLayout>
-                  <Dashboard />
-                </NonAuthenticatedLayout>
-              } />
-              <Route path="/admin/add" element={
-                <NonAuthenticatedLayout>
-                  <AddProduct />
-                </NonAuthenticatedLayout>
-              } />
+              <Route
+                path="/login"
+                element={
+                  <NonAuthenticatedLayout>
+                    <LoginPage />
+                  </NonAuthenticatedLayout>
+                }
+              />
+              {/* Admin Routes (with nested layout) */}
+              <Route path="/admin" element={<Admin />}>
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="products" element={<Overview />} />
+                <Route path="add-product" element={<AddProduct />} />
+              </Route>
             </Routes>
           </CartProvider>
         </FavoritesProvider>
