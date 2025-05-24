@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -58,7 +58,7 @@ const Header = () => {
               { to: "/favorites", icon: faHeart, label: "Favorites" },
               { to: "/about", icon: faInfoCircle, label: "About Us" },
             ].map(({ to, icon, label }) => (
-              <Link
+              <NavLink
                 key={to}
                 to={to}
                 className={`text-md transition duration-300 flex items-center ${
@@ -69,7 +69,7 @@ const Header = () => {
               >
                 <FontAwesomeIcon icon={icon} className="mr-2" />
                 {label}
-              </Link>
+              </NavLink>
             ))}
           </div>
 
