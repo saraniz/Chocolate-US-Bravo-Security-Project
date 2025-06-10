@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -9,17 +9,59 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { adminApi } from '../utils/api';
 
 const Dashboard = () => {
-  const data = [
-    { name: "Jan", sales: 400 },
-    { name: "Feb", sales: 800 },
-    { name: "Mar", sales: 600 },
-    { name: "Apr", sales: 700 },
-    { name: "May", sales: 500 },
-    { name: "Jun", sales: 900 },
-    { name: "Jul", sales: 750 },
-  ];
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalProducts: 0,
+    totalSales: 0,
+    totalRevenue: 0,
+  });
+  const [salesData, setSalesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const [statsResponse, salesResponse] = await Promise.all([
+          adminApi.getDashboardStats(),
+          adminApi.getSalesData()
+        ]);
+        
+        setStats(statsResponse.data);
+        setSalesData(salesResponse.data);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 md:p-8">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error! </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8 space-y-10">
@@ -29,10 +71,10 @@ const Dashboard = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {[
-          { title: "Total Users", value: 0 },
-          { title: "Total Products", value: 0 },
-          { title: "Total Sales", value: 0 },
-          { title: "Total Revenue", value: 0 },
+          { title: "Total Users", value: stats.totalUsers },
+          { title: "Total Products", value: stats.totalProducts },
+          { title: "Total Sales", value: stats.totalSales },
+          { title: "Total Revenue", value: `$${stats.totalRevenue.toLocaleString()}` },
         ].map((stat, index) => (
           <div
             key={index}
@@ -52,13 +94,20 @@ const Dashboard = () => {
         <div className="overflow-x-auto">
           <div className="min-w-[500px] md:min-w-full h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
+              <LineChart data={salesData}>
                 <CartesianGrid stroke="#e5e7eb" strokeDasharray="5 5" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="sales" stroke="#7c3aed" strokeWidth={2} />
+                <Line 
+                  type="monotone" 
+                  dataKey="sales" 
+                  stroke="#7c3aed" 
+                  strokeWidth={2}
+                  dot={{ fill: '#7c3aed', strokeWidth: 2 }}
+                  activeDot={{ r: 8 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>

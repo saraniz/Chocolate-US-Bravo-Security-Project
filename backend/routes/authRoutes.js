@@ -1,23 +1,48 @@
 import express from "express";
 import {
-  login,
-  register,
-  logout,
-  getUserProfile,
-  updateUserProfile,
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
 } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 const router = express.Router();
 
-router.post("/login", login);
-router.post("/register", register);
-router.post("/logout", logout);
-router
-  .route("/profile")
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile);
+// Create admin user route (only for development)
+router.post('/create-admin', async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ email: 'admin@example.com' });
+    if (adminExists) {
+      return res.status(400).json({ message: 'Admin user already exists' });
+    }
+
+    const admin = await User.create({
+      name: 'Admin User',
+      email: 'admin@example.com',
+      password: 'admin123',
+      isAdmin: true
+    });
+
+    res.status(201).json({
+      message: 'Admin user created successfully',
+      admin: {
+        name: admin.name,
+        email: admin.email,
+        isAdmin: admin.isAdmin
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+router.post('/logout', logoutUser);
+router.get('/me', protect, getCurrentUser);
 
 export default router;
 

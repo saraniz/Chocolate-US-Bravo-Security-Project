@@ -1,5 +1,6 @@
-import React from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { adminApi } from '../utils/api';
 
 const sidebarLinks = [
   { name: "Dashboard", path: "/admin/dashboard", icon: "📊" },
@@ -8,6 +9,52 @@ const sidebarLinks = [
 ];
 
 const Admin = () => {
+  const navigate = useNavigate();
+  const [adminUser, setAdminUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/admin/login');
+      return;
+    }
+
+    // Verify token and get admin user data
+    const verifyAdmin = async () => {
+      try {
+        const response = await adminApi.verifyToken();
+        setAdminUser(response.data);
+      } catch (error) {
+        console.error('Error verifying admin:', error);
+        localStorage.removeItem('token');
+        navigate('/admin/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyAdmin();
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    try {
+      await adminApi.logout();
+      localStorage.removeItem('token');
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-chocolate-700"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -21,10 +68,10 @@ const Admin = () => {
         {/* Admin Profile with Hover Dropdown */}
         <div className="relative group inline-block">
           <div className="flex items-center gap-4 text-gray-500">
-            <p>Hi! Admin</p>
+            <p>Hi! {adminUser?.name || 'Admin'}</p>
             <div className="border rounded-full text-sm w-10 h-10 overflow-hidden cursor-pointer">
               <img
-                src="https://via.placeholder.com/40"
+                src={adminUser?.avatar || "https://via.placeholder.com/40"}
                 alt="Admin Avatar"
                 className="w-full h-full object-cover rounded-full"
               />
@@ -33,9 +80,19 @@ const Admin = () => {
 
           {/* Dropdown shown on group hover */}
           <div className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg w-40 hidden group-hover:flex flex-col z-50">
-            <button className="px-4 py-2 hover:bg-gray-100 text-left text-gray-700">Profile</button>
+            <button 
+              onClick={() => navigate('/admin/profile')}
+              className="px-4 py-2 hover:bg-gray-100 text-left text-gray-700"
+            >
+              Profile
+            </button>
             <hr className="my-0" />
-            <button className="px-4 py-2 hover:bg-gray-100 text-left text-gray-700">Logout</button>
+            <button 
+              onClick={handleLogout}
+              className="px-4 py-2 hover:bg-gray-100 text-left text-gray-700"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </header>

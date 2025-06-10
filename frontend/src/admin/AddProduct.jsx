@@ -1,34 +1,113 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { adminApi } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const AddProduct = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    category: '',
+    price: '',
+    offerPrice: '',
+    images: []
+  });
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id.replace('product-', '')]: value
+    }));
+  };
+
+  const handleImageUpload = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreviewImages(prev => {
+        const newPreviews = [...prev];
+        newPreviews[index] = e.target.result;
+        return newPreviews;
+      });
+    };
+    reader.readAsDataURL(file);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const response = await adminApi.uploadImage(formData);
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, response.data.imageUrl]
+      }));
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.images.length === 0) {
+      alert('Please upload at least one product image');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await adminApi.addProduct(formData);
+      alert('Product added successfully!');
+      navigate('/admin/products');
+    } catch (error) {
+      console.error('Error adding product:', error);
+      alert('Failed to add product. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="py-10 px-4 md:px-10 bg-white min-h-screen">
-      <form className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-xl p-6 md:p-10 shadow space-y-8">
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto bg-white border border-gray-300 rounded-xl p-6 md:p-10 shadow space-y-8">
         <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
 
         {/* Image Upload */}
         <div>
           <p className="text-base font-semibold text-gray-700">Product Images</p>
           <div className="flex flex-wrap items-center gap-4 mt-3">
-            {Array(4)
-              .fill('')
-              .map((_, index) => (
-                <label key={index} htmlFor={`image${index}`}>
-                  <input
-                    accept="image/*"
-                    type="file"
-                    id={`image${index}`}
-                    hidden
-                  />
-                  <div className="border-2 border-dashed border-gray-300 rounded-md p-2 w-34 h-34 flex items-center justify-center bg-gray-50 hover:shadow cursor-pointer">
+            {Array(4).fill('').map((_, index) => (
+              <label key={index} htmlFor={`image${index}`} className="relative">
+                <input
+                  accept="image/*"
+                  type="file"
+                  id={`image${index}`}
+                  hidden
+                  onChange={(e) => handleImageUpload(e, index)}
+                />
+                <div className="border-2 border-dashed border-gray-300 rounded-md p-2 w-34 h-34 flex items-center justify-center bg-gray-50 hover:shadow cursor-pointer">
+                  {previewImages[index] ? (
+                    <img
+                      src={previewImages[index]}
+                      alt={`Preview ${index + 1}`}
+                      className="w-32 h-32 object-cover"
+                    />
+                  ) : (
                     <img
                       src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/e-commerce/uploadArea.png"
                       alt="uploadArea"
                       className="w-15 h-15 object-contain"
                     />
-                  </div>
-                </label>
-              ))}
+                  )}
+                </div>
+              </label>
+            ))}
           </div>
         </div>
 
@@ -44,6 +123,8 @@ const AddProduct = () => {
               placeholder="Type product name"
               className="border border-gray-300 rounded-md px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
               required
+              value={formData.name}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -54,14 +135,18 @@ const AddProduct = () => {
             <select
               id="category"
               className="border border-gray-300 rounded-md px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
+              value={formData.category}
+              onChange={handleInputChange}
+              required
             >
               <option value="">Select Category</option>
               {[
-                { name: 'Electronics' },
-                { name: 'Clothing' },
-                { name: 'Accessories' },
-              ].map((item, index) => (
-                <option key={index} value={item.name}>
+                { name: 'Dark Chocolate' },
+                { name: 'Milk Chocolate' },
+                { name: 'White Chocolate' },
+                { name: 'Assorted' },
+              ].map((item) => (
+                <option key={item.name} value={item.name}>
                   {item.name}
                 </option>
               ))}
@@ -77,6 +162,9 @@ const AddProduct = () => {
               rows={4}
               className="border border-gray-300 rounded-md px-4 py-2.5 outline-none resize-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Type description..."
+              value={formData.description}
+              onChange={handleInputChange}
+              required
             ></textarea>
           </div>
 
@@ -90,19 +178,26 @@ const AddProduct = () => {
               placeholder="0"
               className="border border-gray-300 rounded-md px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
               required
+              value={formData.price}
+              onChange={handleInputChange}
+              min="0"
+              step="0.01"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="offer-price" className="text-base font-medium">
+            <label htmlFor="product-offerPrice" className="text-base font-medium">
               Offer Price
             </label>
             <input
-              id="offer-price"
+              id="product-offerPrice"
               type="number"
               placeholder="0"
               className="border border-gray-300 rounded-md px-4 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+              value={formData.offerPrice}
+              onChange={handleInputChange}
+              min="0"
+              step="0.01"
             />
           </div>
         </div>
@@ -110,9 +205,12 @@ const AddProduct = () => {
         <div className="pt-4">
           <button
             type="submit"
-            className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition duration-200"
+            disabled={loading}
+            className={`px-8 py-3 bg-indigo-600 text-white font-medium rounded-md transition duration-200 ${
+              loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-indigo-700'
+            }`}
           >
-            Add Product
+            {loading ? 'Adding Product...' : 'Add Product'}
           </button>
         </div>
       </form>

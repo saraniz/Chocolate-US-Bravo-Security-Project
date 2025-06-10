@@ -19,6 +19,11 @@ import Dashboard from "./admin/Dashboard";
 import AddProduct from "./admin/AddProduct";
 import Overview from "./admin/Overview";
 import Admin from "./admin/Admin";
+import AdminLayout from './admin/layouts/AdminLayout';
+import Users from './admin/pages/Users';
+import Products from './admin/pages/Products';
+import Orders from './admin/pages/Orders';
+import Analytics from './admin/pages/Analytics';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -141,11 +146,13 @@ function App() {
                 }
               />
               {/* Admin Routes (with nested layout) */}
-              <Route path="/admin" element={<Admin />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="products" element={<Overview />} />
-                <Route path="add-product" element={<AddProduct />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="users" element={<Users />} />
+                <Route path="products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>
           </CartProvider>
