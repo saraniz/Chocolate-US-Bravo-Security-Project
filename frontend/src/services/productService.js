@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/products';
+const API_URL = 'http://localhost:8000/api';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -23,7 +23,7 @@ api.interceptors.response.use(
 export const getProducts = async () => {
   try {
     console.log('Fetching products from:', API_URL);
-    const response = await api.get('/');
+    const response = await api.get('/products');
     console.log('Full API response:', response);
     console.log('Response data:', response.data);
     // Handle both paginated and non-paginated responses
@@ -46,19 +46,19 @@ export const getProducts = async () => {
 // Get product by ID
 export const getProductById = async (id) => {
   try {
-    const response = await api.get(`/${id}`);
+    const response = await api.get(`/products/${id}`);
     console.log('Product by ID:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching product:', error);
-    return null;
+    throw error;
   }
 };
 
 // Get products by category
 export const getProductsByCategory = async (category) => {
   try {
-    const response = await api.get(`/category/${category}`);
+    const response = await api.get(`/products/category/${category}`);
     console.log('Category response:', response.data);
     if (response.data && response.data.products) {
       return Array.isArray(response.data.products) ? response.data.products : [];
@@ -76,7 +76,7 @@ export const getProductsByCategory = async (category) => {
 // Search products
 export const searchProducts = async (keyword) => {
   try {
-    const response = await api.get(`/search?keyword=${keyword}`);
+    const response = await api.get(`/products/search?keyword=${keyword}`);
     console.log('Search response:', response.data);
     if (response.data && response.data.products) {
       return Array.isArray(response.data.products) ? response.data.products : [];
@@ -88,5 +88,17 @@ export const searchProducts = async (keyword) => {
   } catch (error) {
     console.error('Error searching products:', error);
     return [];
+  }
+};
+
+export const getPopularProducts = async () => {
+  try {
+    console.log('Fetching popular products...');
+    const response = await api.get('/products/popular');
+    console.log('Popular products response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching popular products:', error);
+    throw error;
   }
 };

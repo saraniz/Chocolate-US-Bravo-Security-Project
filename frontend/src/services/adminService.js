@@ -5,7 +5,11 @@ const API_URL = 'http://localhost:8000/api/admin';
 // Create axios instance with credentials
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
 });
 
 // Add request interceptor to add token
@@ -18,6 +22,19 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/admin/login';
+    }
     return Promise.reject(error);
   }
 );
@@ -45,8 +62,8 @@ export const updateOrderStatus = async (orderId, isDelivered) => {
 };
 
 // Users
-export const getUsers = async (page = 1) => {
-  const response = await api.get(`/users?page=${page}`);
+export const getUsers = async () => {
+  const response = await api.get('/users');
   return response.data;
 };
 
@@ -55,13 +72,13 @@ export const registerUser = async (userData) => {
   return response.data;
 };
 
-export const updateUser = async (userId, userData) => {
-  const response = await api.put(`/users/${userId}`, userData);
+export const updateUser = async (id, userData) => {
+  const response = await api.put(`/users/${id}`, userData);
   return response.data;
 };
 
-export const deleteUser = async (userId) => {
-  const response = await api.delete(`/users/${userId}`);
+export const deleteUser = async (id) => {
+  const response = await api.delete(`/users/${id}`);
   return response.data;
 };
 

@@ -22,8 +22,8 @@ const router = express.Router();
 router.use(protect, admin);
 
 // Dashboard routes
-router.get('/dashboard', getDashboardStats);
-router.get('/analytics', getAnalytics);
+router.get('/dashboard/stats', getDashboardStats);
+router.get('/dashboard/sales', getAnalytics);
 
 // Order routes
 router.route('/orders')

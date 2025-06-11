@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,7 +30,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/admin/login';
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -38,22 +39,22 @@ api.interceptors.response.use(
 // Admin API endpoints
 export const adminApi = {
   // Auth
-  login: (credentials) => api.post('/admin/login', credentials),
-  logout: () => api.post('/admin/logout'),
-  verifyToken: () => api.get('/admin/verify'),
+  login: (credentials) => api.post('/auth/login', credentials),
+  logout: () => api.post('/auth/logout'),
+  verifyToken: () => api.get('/auth/me'),
   
   // Products
-  addProduct: (productData) => api.post('/products', productData),
-  updateProduct: (id, productData) => api.put(`/products/${id}`, productData),
-  deleteProduct: (id) => api.delete(`/products/${id}`),
-  getAllProducts: () => api.get('/products'),
+  addProduct: (productData) => api.post('/admin/products', productData),
+  updateProduct: (id, productData) => api.put(`/admin/products/${id}`, productData),
+  deleteProduct: (id) => api.delete(`/admin/products/${id}`),
+  getAllProducts: () => api.get('/admin/products'),
   
   // Dashboard
   getDashboardStats: () => api.get('/admin/dashboard/stats'),
   getSalesData: () => api.get('/admin/dashboard/sales'),
   
   // Upload
-  uploadImage: (formData) => api.post('/upload', formData, {
+  uploadImage: (formData) => api.post('/admin/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
