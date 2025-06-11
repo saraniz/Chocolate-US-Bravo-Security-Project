@@ -42,7 +42,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="bg-white sticky top-0 z-50 shadow-sm">
+      <div className="bg-white sticky top-0 z-50 px-56">
         <nav className="mx-auto md:px-20 p-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link to="/">
@@ -74,7 +74,7 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
-            <div className="relative">
+            {/* <div className="relative">
               <input
                 type="text"
                 className="px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-chocolate-500 w-48 md:w-64"
@@ -83,7 +83,7 @@ const Header = () => {
               <button className="absolute right-2 top-2 text-chocolate-500 hover:text-chocolate-600 transition duration-300">
                 <FontAwesomeIcon icon={faSearch} />
               </button>
-            </div>
+            </div> */}
 
             <Link
               to="/cart"

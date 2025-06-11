@@ -11,6 +11,7 @@ import {
 import { useFavorites } from '../context/FavoritesContext';
 import { useCart } from '../context/CartContext';
 import { getProducts, searchProducts, getProductsByCategory } from '../services/productService';
+import { Link } from 'react-router-dom';
 
 const ShopComponent = () => {
   const [products, setProducts] = useState([]);
@@ -259,49 +260,56 @@ const ShopComponent = () => {
               key={product._id}
               className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
             >
-              <div className="relative h-48">
-                <img
-                  src={product.images?.[0]?.url || 'https://via.placeholder.com/300x200?text=Chocolate'}
-                  alt={product.name || 'Product'}
-                  className="w-full h-full object-cover"
-                  onError={() => handleImageError(product._id)}
-                />
-                <button
-                  onClick={() => toggleFavorite(product._id)}
-                  className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full"
-                >
-                  <FontAwesomeIcon
-                    icon={faHeart}
-                    className={isFavorite(product._id) ? 'text-pink-500' : 'text-[#8B4513]'}
+              <Link to={`/product/${product._id}`} className="block">
+                <div className="relative h-48">
+                  <img
+                    src={product.images?.[0] || 'https://via.placeholder.com/300x200?text=Chocolate'}
+                    alt={product.name || 'Product'}
+                    className="w-full h-full object-cover"
+                    onError={() => handleImageError(product._id)}
                   />
-                </button>
-                {product.stock === 0 && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white font-bold">Out of Stock</span>
-                  </div>
-                )}
-              </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleFavorite(product._id);
+                    }}
+                    className="absolute top-2 right-2 bg-white/90 hover:bg-white p-2 rounded-full"
+                  >
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className={isFavorite(product._id) ? 'text-pink-500' : 'text-[#8B4513]'}
+                    />
+                  </button>
+                  {product.stock === 0 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <span className="text-white font-bold">Out of Stock</span>
+                    </div>
+                  )}
+                </div>
 
-              <div className="p-4 flex flex-col h-[250px]">
-                <h3 className="text-lg font-bold truncate">{product.name || 'Unnamed Product'}</h3>
-                <span className="inline-block bg-gray-100 text-[#8B4513] px-3 py-1 rounded-full text-sm my-2">
-                  {product.category || 'Unknown'}
-                </span>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xl font-semibold">${product.price?.toFixed(2) || '0.00'}</span>
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, index) => (
-                      <FontAwesomeIcon
-                        key={index}
-                        icon={faStar}
-                        className={index < (product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}
-                      />
-                    ))}
+                <div className="p-4 flex flex-col h-[250px]">
+                  <h3 className="text-lg font-bold truncate">{product.name || 'Unnamed Product'}</h3>
+                  <span className="inline-block bg-gray-100 text-[#8B4513] px-3 py-1 rounded-full text-sm my-2">
+                    {product.category || 'Unknown'}
+                  </span>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xl font-semibold">${product.price?.toFixed(2) || '0.00'}</span>
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, index) => (
+                        <FontAwesomeIcon
+                          key={index}
+                          icon={faStar}
+                          className={index < (product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
+              </Link>
+              <div className="px-4 pb-4">
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className={`w-full bg-[#8B4513] text-white font-bold py-2 px-4 rounded-lg mt-auto ${
+                  className={`w-full bg-[#8B4513] text-white font-bold py-2 px-4 rounded-lg ${
                     product.stock === 0 ? 'bg-gray-400' : 'hover:bg-[#A0522D]'
                   }`}
                   disabled={product.stock === 0}

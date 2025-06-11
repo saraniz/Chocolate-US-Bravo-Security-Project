@@ -54,7 +54,7 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex flex-col justify-start gap-4 mb-8">
         <Link to="/shop" className="text-chocolate-500 hover:text-chocolate-600 transition duration-300">
           <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
           Continue Shopping

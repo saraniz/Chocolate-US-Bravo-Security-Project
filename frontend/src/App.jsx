@@ -135,6 +135,16 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/product/:id"
+                element={
+                  <ProtectedRoute>
+                    <AuthenticatedLayout>
+                      <Product />
+                    </AuthenticatedLayout>
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Non-Protected Routes */}
               <Route

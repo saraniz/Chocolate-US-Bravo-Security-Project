@@ -39,6 +39,8 @@ const sampleProducts = [
       'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
       'https://images.unsplash.com/photo-1606313564201-6c7e5b4e6e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'
     ],
+    rating: 0,
+    numReviews: 0
   },
   {
     name: 'Swiss Milk Chocolate with Hazelnuts',
@@ -240,7 +242,25 @@ const initDB = async () => {
       },
     ];
 
-    await Review.insertMany(sampleReviews);
+    // Insert reviews
+    const createdReviews = await Review.insertMany(sampleReviews);
+
+    // Update product ratings and review counts
+    for (const product of createdProducts) {
+      const productReviews = createdReviews.filter(review => 
+        review.product.toString() === product._id.toString()
+      );
+      
+      if (productReviews.length > 0) {
+        const totalRating = productReviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / productReviews.length;
+        
+        await Product.findByIdAndUpdate(product._id, {
+          rating: averageRating,
+          numReviews: productReviews.length
+        });
+      }
+    }
 
     console.log('Database initialized successfully!');
     process.exit();
