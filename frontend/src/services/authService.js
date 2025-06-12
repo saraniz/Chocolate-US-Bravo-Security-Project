@@ -12,12 +12,41 @@ const api = axios.create({
   }
 });
 
+// Add request interceptor to add token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const login = async (email, password) => {
   try {
     const response = await api.post('/login', { email, password });
-    // Store user data in localStorage (token is handled by cookie)
     if (response.data) {
       localStorage.setItem('user', JSON.stringify(response.data));
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
     }
     return response.data;
   } catch (error) {
@@ -29,9 +58,11 @@ export const login = async (email, password) => {
 export const register = async (userData) => {
   try {
     const response = await api.post('/register', userData);
-    // Store user data in localStorage (token is handled by cookie)
     if (response.data) {
       localStorage.setItem('user', JSON.stringify(response.data));
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
     }
     return response.data;
   } catch (error) {
@@ -44,6 +75,7 @@ export const logout = async () => {
   try {
     await api.post('/logout');
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   } catch (error) {
     console.error('Logout error:', error);
     throw error.response?.data?.message || 'An error occurred during logout';
@@ -52,22 +84,11 @@ export const logout = async () => {
 
 export const getCurrentUser = () => {
   const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null; // user object directly
+  return user ? JSON.parse(user) : null;
 };
-
 
 export const isAuthenticated = () => {
   const user = getCurrentUser();
-  return !!user;
-};
-
-// Add token to all axios requests
-api.interceptors.request.use(
-  (config) => {
-    // No need to add token to headers as it's handled by cookie
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-); 
+  const token = localStorage.getItem('token');
+  return !!(user && token);
+}; 

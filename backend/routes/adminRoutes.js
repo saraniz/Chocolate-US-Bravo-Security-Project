@@ -14,6 +14,7 @@ import {
   deleteUser,
   getAnalytics
 } from '../controllers/adminController.js';
+import { uploadImage } from '../controllers/uploadController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -22,8 +23,8 @@ const router = express.Router();
 router.use(protect, admin);
 
 // Dashboard routes
-router.get('/dashboard', getDashboardStats);
-router.get('/analytics', getAnalytics);
+router.get('/dashboard/stats', getDashboardStats);
+router.get('/dashboard/sales', getAnalytics);
 
 // Order routes
 router.route('/orders')
@@ -50,5 +51,8 @@ router.route('/users')
 router.route('/users/:id')
   .put(updateUser)
   .delete(deleteUser);
+
+// Upload route
+router.post('/upload', uploadImage);
 
 export default router; 

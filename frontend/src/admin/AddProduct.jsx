@@ -14,6 +14,7 @@ const AddProduct = () => {
     images: []
   });
   const [previewImages, setPreviewImages] = useState([]);
+  const [uploadError, setUploadError] = useState(null);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -26,6 +27,9 @@ const AddProduct = () => {
   const handleImageUpload = async (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Reset error state
+    setUploadError(null);
 
     // Preview
     const reader = new FileReader();
@@ -42,14 +46,27 @@ const AddProduct = () => {
       const formData = new FormData();
       formData.append('image', file);
       
+      console.log('Uploading image:', file.name);
       const response = await adminApi.uploadImage(formData);
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, response.data.imageUrl]
-      }));
+      console.log('Upload response:', response.data);
+
+      if (response.data.imageUrl) {
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, response.data.imageUrl]
+        }));
+      } else {
+        throw new Error('No image URL in response');
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
+      setUploadError(`Failed to upload image: ${error.message}`);
+      // Remove the preview if upload failed
+      setPreviewImages(prev => {
+        const newPreviews = [...prev];
+        newPreviews[index] = null;
+        return newPreviews;
+      });
     }
   };
 
@@ -81,6 +98,9 @@ const AddProduct = () => {
         {/* Image Upload */}
         <div>
           <p className="text-base font-semibold text-gray-700">Product Images</p>
+          {uploadError && (
+            <p className="text-red-500 text-sm mt-2">{uploadError}</p>
+          )}
           <div className="flex flex-wrap items-center gap-4 mt-3">
             {Array(4).fill('').map((_, index) => (
               <label key={index} htmlFor={`image${index}`} className="relative">

@@ -4,12 +4,16 @@ import jwt from 'jsonwebtoken';
 
 // Generate JWT Token
 const generateToken = (res, userId) => {
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+  // Ensure userId is a string
+  const userIdStr = userId.toString();
+  console.log('Generating token for user:', userIdStr); // Debug log
+
+  const token = jwt.sign({ id: userIdStr }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
 
   // Set JWT as HTTP-Only cookie
-  res.cookie('token', token, {
+  res.cookie('jwt', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
@@ -39,13 +43,15 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    generateToken(res, user._id);
+    console.log('Created user:', user._id); // Debug log
+    const token = generateToken(res, user._id);
 
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      token
     });
   } else {
     res.status(400);
@@ -62,13 +68,15 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
-    generateToken(res, user._id);
+    console.log('Logged in user:', user._id); // Debug log
+    const token = generateToken(res, user._id);
 
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      token
     });
   } else {
     res.status(401);
@@ -80,7 +88,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/logout
 // @access  Private
 const logoutUser = asyncHandler(async (req, res) => {
-  res.cookie('token', '', {
+  res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
     secure: process.env.NODE_ENV === 'production',

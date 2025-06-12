@@ -8,9 +8,14 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import cors from "cors";
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import cookieParser from 'cookie-parser';
-import orderRoutes from './routes/orderRoutes.js'; 
+import orderRoutes from './routes/orderRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config(); 
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -39,6 +44,11 @@ app.use(express.json());
 
 // Parse cookies
 app.use(cookieParser());
+
+// Serve static files from uploads directory
+const uploadsDir = path.join(__dirname, 'uploads');
+console.log('Serving static files from:', uploadsDir);
+app.use('/uploads', express.static(uploadsDir));
 
 // Routes
 app.use('/api/auth', authRoutes);

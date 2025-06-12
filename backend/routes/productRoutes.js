@@ -11,6 +11,7 @@ import {
   getTopProducts,
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
+import Product from '../models/Product.js';
 
 const router = express.Router();
 
@@ -19,6 +20,9 @@ router.get('/', getProducts);
 
 // Get top products
 router.get('/top', getTopProducts);
+
+// Get popular products (sorted by rating)
+router.get('/popular', getTopProducts);
 
 // Get products by category
 router.get('/category/:category', getProductsByCategory);

@@ -35,7 +35,8 @@ chocolate-bravo/
 
 3. Create a `.env` file in the backend directory with your environment variables:
    ```env
-   PORT=5000
+   PORT=8000
+   MONGO_URI=
    # Add other environment variables as needed
    ```
 
@@ -108,4 +109,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Thanks to all contributors who have helped shape this project
-- Special thanks to the open-source community for their invaluable tools and libraries 
+- Special thanks to the open-source community for their invaluable tools and libraries
+
+## File Uploads
+
+The application handles file uploads (like product images) in the `backend/uploads` directory. This directory is not tracked in Git and should be created locally when running the application. The directory will be created automatically when the first file is uploaded.
+
+For production environments, it's recommended to:
+1. Use a proper file storage service (like AWS S3, Google Cloud Storage, etc.)
+2. Configure the appropriate environment variables for your storage service
+3. Update the upload controller to use the configured storage service 

@@ -13,6 +13,7 @@ import {
   faBoxOpen,
   faCog,
   faSignOutAlt,
+  faDashboard,
 } from "@fortawesome/free-solid-svg-icons";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -42,7 +43,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="bg-white sticky top-0 z-50 px-56">
+      <div className="bg-white sticky top-0 z-50 lg:px-56">
         <nav className="mx-auto md:px-20 p-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link to="/">
@@ -108,6 +109,16 @@ const Header = () => {
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-lg z-50">
+                    {user.isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={closeDropdown}
+                        className="flex items-center px-4 py-2 text-sm hover:bg-neutral-100 text-neutral-700"
+                      >
+                        <FontAwesomeIcon icon={faDashboard} className="mr-2" />
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <Link
                       to="/my-orders"
                       onClick={closeDropdown}
@@ -207,6 +218,11 @@ const Header = () => {
 
                 {isDropdownOpenmobile && (
                   <div className="absolute bg-black z-40 right-0 w-30 p-2 rounded flex flex-col mt-4 space-y-2 text-white text-lg">
+                    {user.isAdmin && (
+                      <Link to="/admin/dashboard" onClick={closeDropdownMobile} className="hover:text-chocolate-500">
+                        <FontAwesomeIcon icon={faDashboard} className="mr-1" /> Admin
+                      </Link>
+                    )}
                     <Link to="/my-orders" onClick={closeDropdownMobile} className="hover:text-chocolate-500">
                       <FontAwesomeIcon icon={faBoxOpen} className="mr-1" /> Orders
                     </Link>
