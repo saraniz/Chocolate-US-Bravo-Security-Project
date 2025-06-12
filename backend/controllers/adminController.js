@@ -138,16 +138,19 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route   POST /api/admin/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
+  console.log('Creating product with data:', req.body);
+  
   const product = new Product({
     name: req.body.name,
     price: req.body.price,
     description: req.body.description,
     category: req.body.category,
     stock: req.body.stock,
-    images: req.body.images
+    images: Array.isArray(req.body.images) ? req.body.images : [req.body.images]
   });
 
   const createdProduct = await product.save();
+  console.log('Product created:', createdProduct);
   res.status(201).json(createdProduct);
 });
 

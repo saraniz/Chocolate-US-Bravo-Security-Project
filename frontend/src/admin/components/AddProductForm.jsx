@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createProduct } from '../../services/adminService';
 import { toast } from 'react-hot-toast';
+import axios from 'axios';
 
 const AddProductForm = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ const AddProductForm = ({ onSuccess }) => {
     stock: '',
     images: []
   });
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const categories = [
     'Dark Chocolate',
@@ -31,6 +33,7 @@ const AddProductForm = ({ onSuccess }) => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
+    setSelectedFiles(files);
     const imageUrls = files.map(file => URL.createObjectURL(file));
     setFormData(prev => ({
       ...prev,
@@ -38,15 +41,72 @@ const AddProductForm = ({ onSuccess }) => {
     }));
   };
 
+  const uploadImages = async (files) => {
+    const uploadedUrls = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      try {
+        console.log('Uploading file:', file.name);
+        const response = await axios.post('http://localhost:8000/api/admin/upload', formData, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        console.log('Upload response:', response.data);
+        
+        // Check if response has url or imageUrl
+        const imageUrl = response.data.url || response.data.imageUrl;
+        if (imageUrl) {
+          uploadedUrls.push(imageUrl);
+        } else {
+          console.error('Invalid response format:', response.data);
+          throw new Error('Server response missing image URL');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        console.error('Error response:', error.response?.data);
+        toast.error(`Failed to upload ${file.name}: ${error.response?.data?.message || error.message}`);
+        throw error;
+      }
+    }
+    return uploadedUrls;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (selectedFiles.length === 0) {
+      toast.error('Please select at least one image');
+      return;
+    }
+    
     setLoading(true);
     try {
+      // First upload all images
+      console.log('Starting image uploads...');
+      const uploadedImageUrls = await uploadImages(selectedFiles);
+      console.log('Successfully uploaded image URLs:', uploadedImageUrls);
+      
+      if (uploadedImageUrls.length === 0) {
+        throw new Error('No images were successfully uploaded');
+      }
+      
+      // Then create the product with the uploaded image URLs
+      console.log('Creating product with data:', {
+        ...formData,
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock),
+        images: uploadedImageUrls
+      });
+      
       await createProduct({
         ...formData,
         price: parseFloat(formData.price),
-        stock: parseInt(formData.stock)
+        stock: parseInt(formData.stock),
+        images: uploadedImageUrls
       });
+      
       toast.success('Product added successfully');
       onSuccess?.();
       setFormData({
@@ -57,7 +117,9 @@ const AddProductForm = ({ onSuccess }) => {
         stock: '',
         images: []
       });
+      setSelectedFiles([]);
     } catch (error) {
+      console.error('Error creating product:', error);
       toast.error(error.response?.data?.message || 'Failed to add product');
     } finally {
       setLoading(false);

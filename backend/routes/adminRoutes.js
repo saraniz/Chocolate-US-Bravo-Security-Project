@@ -14,6 +14,7 @@ import {
   deleteUser,
   getAnalytics
 } from '../controllers/adminController.js';
+import { uploadImage } from '../controllers/uploadController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -50,5 +51,8 @@ router.route('/users')
 router.route('/users/:id')
   .put(updateUser)
   .delete(deleteUser);
+
+// Upload route
+router.post('/upload', uploadImage);
 
 export default router; 

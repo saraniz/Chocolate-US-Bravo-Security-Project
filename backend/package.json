@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "data:import": "node initDB.js"
+    "data:import": "node initDB.js",
+    "postinstall": "mkdir -p uploads"
   },
   "keywords": [],
   "author": "",
