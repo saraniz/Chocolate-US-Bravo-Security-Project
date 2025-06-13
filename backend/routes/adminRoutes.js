@@ -1,58 +1,37 @@
 import express from 'express';
-import {
-  getDashboardStats,
-  getOrders,
-  getOrderDetails,
-  updateOrderStatus,
-  getProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  getUsers,
-  registerUser,
-  updateUser,
-  deleteUser,
-  getAnalytics
-} from '../controllers/adminController.js';
-import { uploadImage } from '../controllers/uploadController.js';
+import adminController from '../controllers/adminController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
-const router = express.Router();
+export default function createAdminRouter({ redisClient, sessionStore, invalidateCache }) {
+  const router = express.Router();
+  const controller = adminController({ redisClient, sessionStore, invalidateCache });
 
-// Protect all routes with authentication and admin middleware
-router.use(protect, admin);
+  // Dashboard routes
+  router.get('/dashboard/stats', protect, admin, controller.getDashboardStats);
+  router.get('/dashboard/sales', protect, admin, controller.getAnalytics);
 
-// Dashboard routes
-router.get('/dashboard/stats', getDashboardStats);
-router.get('/dashboard/sales', getAnalytics);
+  // Order routes
+  router.route('/orders')
+    .get(protect, admin, controller.getOrders);
+  router.route('/orders/:id')
+    .get(protect, admin, controller.getOrderDetails)
+    .put(protect, admin, controller.updateOrderStatus);
 
-// Order routes
-router.route('/orders')
-  .get(getOrders);
+  // Product routes
+  router.route('/products')
+    .get(protect, admin, controller.getProducts)
+    .post(protect, admin, controller.createProduct);
+  router.route('/products/:id')
+    .put(protect, admin, controller.updateProduct)
+    .delete(protect, admin, controller.deleteProduct);
 
-router.route('/orders/:id')
-  .get(getOrderDetails)
-  .put(updateOrderStatus);
+  // User routes
+  router.route('/users')
+    .get(protect, admin, controller.getUsers)
+    .post(protect, admin, controller.registerUser);
+  router.route('/users/:id')
+    .put(protect, admin, controller.updateUser)
+    .delete(protect, admin, controller.deleteUser);
 
-// Product routes
-router.route('/products')
-  .get(getProducts)
-  .post(createProduct);
-
-router.route('/products/:id')
-  .put(updateProduct)
-  .delete(deleteProduct);
-
-// User routes
-router.route('/users')
-  .get(getUsers)
-  .post(registerUser);
-
-router.route('/users/:id')
-  .put(updateUser)
-  .delete(deleteUser);
-
-// Upload route
-router.post('/upload', uploadImage);
-
-export default router; 
+  return router;
+} 
