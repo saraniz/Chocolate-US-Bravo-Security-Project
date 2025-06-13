@@ -1,47 +1,51 @@
 import express from 'express';
-import {
-  getProducts,
-  getProductById,
-  getProductsByCategory,
-  searchProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  createProductReview,
-  getTopProducts,
-} from '../controllers/productController.js';
+import productController from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import Product from '../models/Product.js';
 
-const router = express.Router();
+export default function createProductRouter(redisObjects) {
+  const {
+    getProducts,
+    getProductById,
+    getProductsByCategory,
+    searchProducts,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    createProductReview,
+    getTopProducts,
+  } = productController(redisObjects);
 
-// Get all products
-router.get('/', getProducts);
+  const router = express.Router();
 
-// Get top products
-router.get('/top', getTopProducts);
+  // Get all products
+  router.get('/', getProducts);
 
-// Get popular products (sorted by rating)
-router.get('/popular', getTopProducts);
+  // Get top products
+  router.get('/top', getTopProducts);
 
-// Get products by category
-router.get('/category/:category', getProductsByCategory);
+  // Get popular products (sorted by rating)
+  router.get('/popular', getTopProducts);
 
-// Search products
-router.get('/search', searchProducts);
+  // Get products by category
+  router.get('/category/:category', getProductsByCategory);
 
-// Get product by ID - should be after all specific routes
-router.get('/:id', getProductById);
+  // Search products
+  router.get('/search', searchProducts);
 
-// Product CRUD
-router.route('/')
-  .post(protect, admin, createProduct);
+  // Get product by ID - should be after all specific routes
+  router.get('/:id', getProductById);
 
-router.route('/:id/reviews')
-  .post(protect, createProductReview);
+  // Product CRUD
+  router.route('/')
+    .post(protect, admin, createProduct);
 
-router.route('/:id')
-  .put(protect, admin, updateProduct)
-  .delete(protect, admin, deleteProduct);
+  router.route('/:id/reviews')
+    .post(protect, createProductReview);
 
-export default router;
+  router.route('/:id')
+    .put(protect, admin, updateProduct)
+    .delete(protect, admin, deleteProduct);
+
+  return router;
+}

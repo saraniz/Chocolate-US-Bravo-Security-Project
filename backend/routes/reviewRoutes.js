@@ -1,19 +1,28 @@
 import express from 'express';
 import { protect } from '../middleware/authMiddleware.js';
-import * as reviewController from '../controllers/reviewController.js';
+import reviewController from '../controllers/reviewController.js';
 
-const router = express.Router();
+export default function createReviewRouter(redisObjects) {
+  const {
+    getProductReviews,
+    addReview,
+    updateReview,
+    deleteReview
+  } = reviewController(redisObjects);
 
-// Get reviews for a product
-router.get('/product/:productId', reviewController.getProductReviews);
+  const router = express.Router();
 
-// Add a review (protected route)
-router.post('/product/:productId', protect, reviewController.addReview);
+  // Get reviews for a product
+  router.get('/product/:productId', getProductReviews);
 
-// Update a review (protected route)
-router.put('/:reviewId', protect, reviewController.updateReview);
+  // Add a review (protected route)
+  router.post('/product/:productId', protect, addReview);
 
-// Delete a review (protected route)
-router.delete('/:reviewId', protect, reviewController.deleteReview);
+  // Update a review (protected route)
+  router.put('/:reviewId', protect, updateReview);
 
-export default router; 
+  // Delete a review (protected route)
+  router.delete('/:reviewId', protect, deleteReview);
+
+  return router;
+} 

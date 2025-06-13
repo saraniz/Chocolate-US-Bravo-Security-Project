@@ -62,7 +62,7 @@ export const adminApi = {
   uploadImage: (formData) => {
     console.log('Uploading image:', formData);
     return api.post('/admin/upload', formData);
-  },
+    },
 };
 
 export default api; 

@@ -1,50 +1,63 @@
 import express from "express";
-import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  getCurrentUser,
-} from "../controllers/authController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import authController from "../controllers/authController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-const router = express.Router();
+export default function createAuthRouter(redisObjects) {
+  const {
+    registerUser,
+    loginUser,
+    logoutUser,
+    getUserProfile,
+    updateUserProfile,
+    getUsers,
+    deleteUser
+  } = authController(redisObjects);
 
-// Create admin user route (only for development)
-router.post('/create-admin', async (req, res) => {
-  try {
-    const adminExists = await User.findOne({ email: 'admin@example.com' });
-    if (adminExists) {
-      return res.status(400).json({ message: 'Admin user already exists' });
-    }
+  const router = express.Router();
 
-    const admin = await User.create({
-      name: 'Admin User',
-      email: 'admin@example.com',
-      password: 'admin123',
-      isAdmin: true
-    });
-
-    res.status(201).json({
-      message: 'Admin user created successfully',
-      admin: {
-        name: admin.name,
-        email: admin.email,
-        isAdmin: admin.isAdmin
+  // Create admin user route (only for development)
+  router.post('/create-admin', async (req, res) => {
+    try {
+      const adminExists = await User.findOne({ email: 'admin@example.com' });
+      if (adminExists) {
+        return res.status(400).json({ message: 'Admin user already exists' });
       }
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.post('/logout', logoutUser);
-router.get('/me', protect, getCurrentUser);
+      const admin = await User.create({
+        name: 'Admin User',
+        email: 'admin@example.com',
+        password: 'admin123',
+        isAdmin: true
+      });
 
-export default router;
+      res.status(201).json({
+        message: 'Admin user created successfully',
+        admin: {
+          name: admin.name,
+          email: admin.email,
+          isAdmin: admin.isAdmin
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  router.post('/register', registerUser);
+  router.post('/login', loginUser);
+  router.post('/logout', logoutUser);
+  router.route('/profile')
+    .get(protect, getUserProfile)
+    .put(protect, updateUserProfile);
+  router.route('/users')
+    .get(protect, admin, getUsers);
+  router.route('/users/:id')
+    .delete(protect, admin, deleteUser);
+
+  return router;
+}
 
 export const generateToken = (res, userId) => {
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {

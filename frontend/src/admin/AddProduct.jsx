@@ -51,10 +51,10 @@ const AddProduct = () => {
       console.log('Upload response:', response.data);
 
       if (response.data.imageUrl) {
-        setFormData(prev => ({
-          ...prev,
-          images: [...prev.images, response.data.imageUrl]
-        }));
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, response.data.imageUrl]
+      }));
       } else {
         throw new Error('No image URL in response');
       }

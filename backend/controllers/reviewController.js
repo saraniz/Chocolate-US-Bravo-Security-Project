@@ -1,35 +1,34 @@
 import Review from '../models/Review.js';
 import Product from '../models/Product.js';
+import asyncHandler from '../middleware/asyncHandler.js';
 
-// Get reviews for a product
-export const getProductReviews = async (req, res) => {
-  try {
+export default function reviewController({ invalidateCache }) {
+  // Get reviews for a product
+  const getProductReviews = asyncHandler(async (req, res) => {
     const reviews = await Review.find({ product: req.params.productId })
       .populate('user', 'name')
       .sort({ createdAt: -1 });
     res.json(reviews);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching reviews', error: error.message });
-  }
-};
+  });
 
-// Add a review
-export const addReview = async (req, res) => {
-  try {
+  // Add a review
+  const addReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const productId = req.params.productId;
-    const userId = req.user._id; // Assuming you have authentication middleware
+    const userId = req.user._id;
 
     // Check if product exists
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      res.status(404);
+      throw new Error('Product not found');
     }
 
     // Check if user has already reviewed this product
     const existingReview = await Review.findOne({ user: userId, product: productId });
     if (existingReview) {
-      return res.status(400).json({ message: 'You have already reviewed this product' });
+      res.status(400);
+      throw new Error('You have already reviewed this product');
     }
 
     // Create new review
@@ -49,28 +48,29 @@ export const addReview = async (req, res) => {
     product.numReviews = allReviews.length;
     await product.save();
 
+    // Invalidate cache for this product
+    await invalidateCache(`products*${productId}*`);
+
     // Populate user details before sending response
     await review.populate('user', 'name');
 
     res.status(201).json(review);
-  } catch (error) {
-    res.status(500).json({ message: 'Error adding review', error: error.message });
-  }
-};
+  });
 
-// Update a review
-export const updateReview = async (req, res) => {
-  try {
+  // Update a review
+  const updateReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const review = await Review.findById(req.params.reviewId);
 
     if (!review) {
-      return res.status(404).json({ message: 'Review not found' });
+      res.status(404);
+      throw new Error('Review not found');
     }
 
     // Check if user owns the review
     if (review.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized to update this review' });
+      res.status(403);
+      throw new Error('Not authorized to update this review');
     }
 
     review.rating = rating;
@@ -85,25 +85,26 @@ export const updateReview = async (req, res) => {
     product.numReviews = allReviews.length;
     await product.save();
 
+    // Invalidate cache for this product
+    await invalidateCache(`products*${review.product}*`);
+
     await review.populate('user', 'name');
     res.json(review);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating review', error: error.message });
-  }
-};
+  });
 
-// Delete a review
-export const deleteReview = async (req, res) => {
-  try {
+  // Delete a review
+  const deleteReview = asyncHandler(async (req, res) => {
     const review = await Review.findById(req.params.reviewId);
 
     if (!review) {
-      return res.status(404).json({ message: 'Review not found' });
+      res.status(404);
+      throw new Error('Review not found');
     }
 
     // Check if user owns the review
     if (review.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized to delete this review' });
+      res.status(403);
+      throw new Error('Not authorized to delete this review');
     }
 
     await review.deleteOne();
@@ -118,8 +119,16 @@ export const deleteReview = async (req, res) => {
     product.numReviews = allReviews.length;
     await product.save();
 
+    // Invalidate cache for this product
+    await invalidateCache(`products*${review.product}*`);
+
     res.json({ message: 'Review deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting review', error: error.message });
-  }
-}; 
+  });
+
+  return {
+    getProductReviews,
+    addReview,
+    updateReview,
+    deleteReview
+  };
+} 
