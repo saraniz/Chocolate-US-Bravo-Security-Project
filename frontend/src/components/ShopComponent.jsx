@@ -30,7 +30,10 @@ const ShopComponent = () => {
 
   // Log products state changes for debugging
   useEffect(() => {
-    console.log('Products state updated:', products);
+    console.log('🔄 Products state updated:', {
+      count: products.length,
+      products: products
+    });
   }, [products]);
 
   useEffect(() => {
@@ -39,19 +42,37 @@ const ShopComponent = () => {
 
   const fetchProducts = async () => {
     try {
+      console.log('🔄 Starting to fetch products...');
       setLoading(true);
       setError(null);
-      const data = await getProducts();
-      console.log('Fetched products:', data);
-      if (Array.isArray(data)) {
-        setProducts([...data]); // Ensure new array to trigger re-render
-      } else {
-        console.error('Received non-array data:', data);
-        setProducts([]);
+      
+      const response = await getProducts();
+      console.log('📦 Raw API response:', response);
+      
+      if (!response) {
+        console.error('❌ No response received from API');
+        throw new Error('No response received from server');
       }
+      
+      // Handle both paginated and direct array responses
+      const products = Array.isArray(response) ? response : response.products || [];
+      
+      console.log('📦 Processed products:', {
+        isArray: Array.isArray(products),
+        length: products?.length,
+        firstProduct: products[0],
+        allProducts: products
+      });
+      
+      setProducts(products);
     } catch (err) {
-      console.error('Error in fetchProducts:', err);
-      setError('Failed to load products. Please try again later.');
+      console.error('❌ Error in fetchProducts:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        stack: err.stack
+      });
+      setError(err.response?.data?.message || 'Failed to load products. Please try again later.');
       setProducts([]);
     } finally {
       setLoading(false);
@@ -74,16 +95,10 @@ const ShopComponent = () => {
       } else {
         data = await getProducts();
       }
-      console.log('Search results:', data);
-      if (Array.isArray(data)) {
-        setProducts([...data]);
-      } else {
-        console.error('Received non-array data:', data);
-        setProducts([]);
-      }
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Error in handleSearch:', err);
-      setError('Failed to search products. Please try again later.');
+      setError(err.response?.data?.message || 'Failed to search products. Please try again later.');
       setProducts([]);
     } finally {
       setLoading(false);
@@ -112,12 +127,7 @@ const ShopComponent = () => {
         data = await getProductsByCategory(newCategory);
       }
       console.log('Category products:', data);
-      if (Array.isArray(data)) {
         setProducts([...data]);
-      } else {
-        console.error('Received non-array data:', data);
-        setProducts([]);
-      }
     } catch (err) {
       console.error('Error in handleCategoryChange:', err);
       setError('Failed to filter products. Please try again later.');
@@ -146,6 +156,41 @@ const ShopComponent = () => {
     setProducts([...sortedProducts]);
   };
 
+  const ProductCard = ({ product }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const images = product.images || [product.image];
+
+    return (
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="relative h-48">
+          <img
+            src={images[currentImageIndex]}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+          {images.length > 1 && (
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-2 h-2 rounded-full ${
+                    currentImageIndex === index ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="p-4">
+          <h3 className="text-lg font-semibold">{product.name}</h3>
+          <p className="text-gray-600">${product.price}</p>
+          <p className="text-sm text-gray-500">{product.category}</p>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
@@ -165,6 +210,23 @@ const ShopComponent = () => {
             className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
           >
             Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-4">No Products Found</h2>
+          <p className="text-gray-600 mb-4">We couldn't find any products matching your criteria.</p>
+          <button
+            onClick={fetchProducts}
+            className="bg-[#8B4513] hover:bg-[#A0522D] text-white font-bold py-2 px-4 rounded"
+          >
+            Refresh Products
           </button>
         </div>
       </div>

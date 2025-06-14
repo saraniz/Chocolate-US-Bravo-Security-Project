@@ -42,23 +42,7 @@ RUN mkdir -p uploads && \
 # Set environment variables
 ENV NODE_ENV=production \
     PORT=8000 \
-    NODE_OPTIONS="--max-old-space-size=512" \
-    MONGODB_URI="mongodb://mongodb:27017/chocolate_bravo" \
-    JWT_SECRET="change-this-in-production" \
-    FRONTEND_URL="http://localhost" \
-    UPLOAD_PATH="/app/uploads" \
-    REDIS_URL="redis://redis:6379" \
-    RATE_LIMIT_WINDOW_MS=900000 \
-    RATE_LIMIT_MAX_REQUESTS=100 \
-    JWT_EXPIRES_IN="24h" \
-    COOKIE_SECRET="change-this-in-production" \
-    MAX_FILE_SIZE=5242880 \
-    ALLOWED_FILE_TYPES="image/jpeg,image/png,image/gif" \
-    CORS_ORIGIN="http://localhost" \
-    CORS_CREDENTIALS=true \
-    CORS_METHODS="GET,POST,PUT,DELETE,OPTIONS" \
-    CORS_ALLOWED_HEADERS="Content-Type,Authorization,X-Requested-With,Accept" \
-    CORS_EXPOSED_HEADERS="Set-Cookie"
+    NODE_OPTIONS="--max-old-space-size=512"
 
 # Switch to non-root user
 USER node

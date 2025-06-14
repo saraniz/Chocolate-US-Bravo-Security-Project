@@ -10,18 +10,18 @@ export default function createReviewRouter(redisObjects) {
     deleteReview
   } = reviewController(redisObjects);
 
-  const router = express.Router();
+const router = express.Router();
 
-  // Get reviews for a product
+// Get reviews for a product
   router.get('/product/:productId', getProductReviews);
 
-  // Add a review (protected route)
+// Add a review (protected route)
   router.post('/product/:productId', protect, addReview);
 
-  // Update a review (protected route)
+// Update a review (protected route)
   router.put('/:reviewId', protect, updateReview);
 
-  // Delete a review (protected route)
+// Delete a review (protected route)
   router.delete('/:reviewId', protect, deleteReview);
 
   return router;

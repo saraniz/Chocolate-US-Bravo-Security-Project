@@ -9,7 +9,15 @@ const createRedisClient = () => {
     host: process.env.REDIS_HOST || 'localhost',
     port: process.env.REDIS_PORT || 6379,
     password: process.env.REDIS_PASSWORD,
-    retryStrategy: (times) => Math.min(times * 50, 2000)
+    retryStrategy: (times) => Math.min(times * 50, 2000),
+    // Add persistence options
+    enableOfflineQueue: true,
+    maxRetriesPerRequest: 3,
+    // Add connection options
+    connectTimeout: 10000,
+    disconnectTimeout: 2000,
+    // Add key prefix
+    keyPrefix: 'chocolate_bravo:'
   });
 
   // Add event listeners for connection status
@@ -139,7 +147,9 @@ const createCacheMiddleware = (client) => {
         return next();
       }
 
-      const key = `cache:${req.originalUrl}`;
+      // Create a cache key that ignores query parameters for product listings
+      const baseUrl = req.originalUrl.split('?')[0];
+      const key = `cache:${baseUrl}`;
       
       try {
         const cachedResponse = await client.get(key);
@@ -153,8 +163,12 @@ const createCacheMiddleware = (client) => {
         // Store original res.json
         const originalJson = res.json;
         res.json = function(body) {
-          client.setex(key, duration, JSON.stringify(body));
-          console.log(`💾 Cached response: ${key}`);
+          // Only cache successful responses
+          if (res.statusCode === 200) {
+            client.setex(key, duration, JSON.stringify(body))
+              .then(() => console.log(`💾 Cached response: ${key}`))
+              .catch(err => console.error('❌ Cache storage error:', err));
+          }
           return originalJson.call(this, body);
         };
 

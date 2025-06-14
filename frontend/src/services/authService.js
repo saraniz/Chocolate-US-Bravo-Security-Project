@@ -106,8 +106,8 @@ export const logout = async () => {
 
 export const getCurrentUser = () => {
   try {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
   } catch (error) {
     console.error('Error getting current user:', error);
     return null;
@@ -116,9 +116,9 @@ export const getCurrentUser = () => {
 
 export const isAuthenticated = () => {
   try {
-    const user = getCurrentUser();
-    const token = localStorage.getItem('token');
-    return !!(user && token);
+  const user = getCurrentUser();
+  const token = localStorage.getItem('token');
+  return !!(user && token);
   } catch (error) {
     console.error('Error checking authentication:', error);
     return false;

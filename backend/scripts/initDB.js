@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import User from './models/User.js';
-import Product from './models/Product.js';
-import Order from './models/Order.js';
-import Review from './models/Review.js';
+import User from '../models/User.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
+import Review from '../models/Review.js';
 
 dotenv.config();
 

@@ -15,39 +15,39 @@ export default function createAuthRouter(redisObjects) {
     deleteUser
   } = authController(redisObjects);
 
-  const router = express.Router();
+const router = express.Router();
 
-  // Create admin user route (only for development)
-  router.post('/create-admin', async (req, res) => {
-    try {
-      const adminExists = await User.findOne({ email: 'admin@example.com' });
-      if (adminExists) {
-        return res.status(400).json({ message: 'Admin user already exists' });
-      }
-
-      const admin = await User.create({
-        name: 'Admin User',
-        email: 'admin@example.com',
-        password: 'admin123',
-        isAdmin: true
-      });
-
-      res.status(201).json({
-        message: 'Admin user created successfully',
-        admin: {
-          name: admin.name,
-          email: admin.email,
-          isAdmin: admin.isAdmin
-        }
-      });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+// Create admin user route (only for development)
+router.post('/create-admin', async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ email: 'admin@example.com' });
+    if (adminExists) {
+      return res.status(400).json({ message: 'Admin user already exists' });
     }
-  });
 
-  router.post('/register', registerUser);
-  router.post('/login', loginUser);
-  router.post('/logout', logoutUser);
+    const admin = await User.create({
+      name: 'Admin User',
+      email: 'admin@example.com',
+      password: 'admin123',
+      isAdmin: true
+    });
+
+    res.status(201).json({
+      message: 'Admin user created successfully',
+      admin: {
+        name: admin.name,
+        email: admin.email,
+        isAdmin: admin.isAdmin
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+router.post('/logout', logoutUser);
   router.route('/profile')
     .get(protect, getUserProfile)
     .put(protect, updateUserProfile);
