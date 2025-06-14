@@ -3,7 +3,7 @@ import Product from '../models/Product.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
 export default function reviewController({ invalidateCache }) {
-  // Get reviews for a product
+// Get reviews for a product
   const getProductReviews = asyncHandler(async (req, res) => {
     const reviews = await Review.find({ product: req.params.productId })
       .populate('user', 'name')
@@ -11,7 +11,7 @@ export default function reviewController({ invalidateCache }) {
     res.json(reviews);
   });
 
-  // Add a review
+// Add a review
   const addReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const productId = req.params.productId;
@@ -57,7 +57,7 @@ export default function reviewController({ invalidateCache }) {
     res.status(201).json(review);
   });
 
-  // Update a review
+// Update a review
   const updateReview = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const review = await Review.findById(req.params.reviewId);
@@ -92,7 +92,7 @@ export default function reviewController({ invalidateCache }) {
     res.json(review);
   });
 
-  // Delete a review
+// Delete a review
   const deleteReview = asyncHandler(async (req, res) => {
     const review = await Review.findById(req.params.reviewId);
 

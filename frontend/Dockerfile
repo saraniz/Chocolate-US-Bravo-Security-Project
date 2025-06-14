@@ -25,9 +25,6 @@ RUN apk add --no-cache curl
 # Copy built assets from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 # Create directory for custom error pages
 RUN mkdir -p /usr/share/nginx/html/error
 
@@ -48,3 +45,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
+ 

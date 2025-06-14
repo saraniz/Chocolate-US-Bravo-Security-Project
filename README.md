@@ -109,7 +109,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Thanks to all contributors who have helped shape this project
-- Special thanks to the open-source community for their invaluable tools and libraries
+- Special thanks to the open-source community for their invaluable tools and libraries 
 
 ## File Uploads
 
