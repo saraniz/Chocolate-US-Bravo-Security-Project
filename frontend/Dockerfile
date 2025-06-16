@@ -7,42 +7,41 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install ALL dependencies (including devDependencies)
 RUN npm ci
 
-# Copy source code
+# Copy the rest of the source code
 COPY . .
 
-# Build the application
+# Build the application using Vite
 RUN npm run build
 
-# Production stage
+# Production stage with NGINX
 FROM nginx:alpine
 
-# Install curl for healthcheck
+# Install curl for health check
 RUN apk add --no-cache curl
 
-# Copy built assets from builder stage
+# Copy built static files from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Create directory for custom error pages
 RUN mkdir -p /usr/share/nginx/html/error
 
-# Add custom error pages
+# Use same index.html for fallback error pages
 COPY --from=builder /app/dist/index.html /usr/share/nginx/html/error/404.html
 COPY --from=builder /app/dist/index.html /usr/share/nginx/html/error/500.html
 
-# Set proper permissions
+# Set file permissions
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chmod -R 755 /usr/share/nginx/html
 
-# Expose port
+# Expose default HTTP port
 EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
-# Start nginx
+# Run NGINX
 CMD ["nginx", "-g", "daemon off;"]
- 
