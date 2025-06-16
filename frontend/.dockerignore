@@ -40,6 +40,7 @@ coverage
 *.temp
 .cache
 
-# Uploads (will be mounted as volume)
-backend/uploads/*
-!backend/uploads/.gitkeep 
+
+# Docker
+Dockerfile
+.dockerignore
