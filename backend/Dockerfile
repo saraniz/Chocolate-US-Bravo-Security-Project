@@ -21,7 +21,7 @@ WORKDIR /app
 
 # Install production dependencies only
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
 # Copy application files from builder stage
 COPY --from=builder /app/controllers ./controllers
@@ -32,7 +32,6 @@ COPY --from=builder /app/utils ./utils
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/server.js ./
-COPY --from=builder /app/initDB.js ./
 
 # Create uploads directory with proper permissions
 RUN mkdir -p uploads && \
