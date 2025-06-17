@@ -1,54 +1,37 @@
 import express from 'express';
-import {
-  getDashboardStats,
-  getOrders,
-  getOrderDetails,
-  updateOrderStatus,
-  getProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-  getUsers,
-  registerUser,
-  updateUser,
-  deleteUser,
-  getAnalytics
-} from '../controllers/adminController.js';
+import adminController from '../controllers/adminController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
+export default function createAdminRouter({ redisClient, sessionStore, invalidateCache }) {
 const router = express.Router();
-
-// Protect all routes with authentication and admin middleware
-router.use(protect, admin);
+  const controller = adminController({ redisClient, sessionStore, invalidateCache });
 
 // Dashboard routes
-router.get('/dashboard', getDashboardStats);
-router.get('/analytics', getAnalytics);
+  router.get('/dashboard/stats', protect, admin, controller.getDashboardStats);
+  router.get('/dashboard/sales', protect, admin, controller.getAnalytics);
 
 // Order routes
 router.route('/orders')
-  .get(getOrders);
-
+    .get(protect, admin, controller.getOrders);
 router.route('/orders/:id')
-  .get(getOrderDetails)
-  .put(updateOrderStatus);
+    .get(protect, admin, controller.getOrderDetails)
+    .put(protect, admin, controller.updateOrderStatus);
 
 // Product routes
 router.route('/products')
-  .get(getProducts)
-  .post(createProduct);
-
+    .get(protect, admin, controller.getProducts)
+    .post(protect, admin, controller.createProduct);
 router.route('/products/:id')
-  .put(updateProduct)
-  .delete(deleteProduct);
+    .put(protect, admin, controller.updateProduct)
+    .delete(protect, admin, controller.deleteProduct);
 
 // User routes
 router.route('/users')
-  .get(getUsers)
-  .post(registerUser);
-
+    .get(protect, admin, controller.getUsers)
+    .post(protect, admin, controller.registerUser);
 router.route('/users/:id')
-  .put(updateUser)
-  .delete(deleteUser);
+    .put(protect, admin, controller.updateUser)
+    .delete(protect, admin, controller.deleteUser);
 
-export default router; 
+  return router;
+} 

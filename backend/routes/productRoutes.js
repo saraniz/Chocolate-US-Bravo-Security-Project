@@ -1,5 +1,10 @@
 import express from 'express';
-import {
+import productController from '../controllers/productController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
+import Product from '../models/Product.js';
+
+export default function createProductRouter(redisObjects) {
+  const {
   getProducts,
   getProductById,
   getProductsByCategory,
@@ -9,8 +14,7 @@ import {
   deleteProduct,
   createProductReview,
   getTopProducts,
-} from '../controllers/productController.js';
-import { protect, admin } from '../middleware/authMiddleware.js';
+  } = productController(redisObjects);
 
 const router = express.Router();
 
@@ -19,6 +23,9 @@ router.get('/', getProducts);
 
 // Get top products
 router.get('/top', getTopProducts);
+
+// Get popular products (sorted by rating)
+router.get('/popular', getTopProducts);
 
 // Get products by category
 router.get('/category/:category', getProductsByCategory);
@@ -40,4 +47,5 @@ router.route('/:id')
   .put(protect, admin, updateProduct)
   .delete(protect, admin, deleteProduct);
 
-export default router;
+  return router;
+}

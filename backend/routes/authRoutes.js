@@ -1,13 +1,19 @@
 import express from "express";
-import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  getCurrentUser,
-} from "../controllers/authController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import authController from "../controllers/authController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+
+export default function createAuthRouter(redisObjects) {
+  const {
+    registerUser,
+    loginUser,
+    logoutUser,
+    getUserProfile,
+    updateUserProfile,
+    getUsers,
+    deleteUser
+  } = authController(redisObjects);
 
 const router = express.Router();
 
@@ -42,9 +48,16 @@ router.post('/create-admin', async (req, res) => {
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
-router.get('/me', protect, getCurrentUser);
+  router.route('/profile')
+    .get(protect, getUserProfile)
+    .put(protect, updateUserProfile);
+  router.route('/users')
+    .get(protect, admin, getUsers);
+  router.route('/users/:id')
+    .delete(protect, admin, deleteUser);
 
-export default router;
+  return router;
+}
 
 export const generateToken = (res, userId) => {
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {

@@ -1,4 +1,4 @@
-import Product from '../models/productModel.js';
+import Product from '../models/Product.js';
 
 const productMiddleware = {
   async checkProductOwnership(req, res, next) {

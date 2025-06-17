@@ -155,6 +155,14 @@ function App() {
                   </NonAuthenticatedLayout>
                 }
               />
+              <Route
+                path="/register"
+                element={
+                  <NonAuthenticatedLayout>
+                    < RegisterPage/>
+                  </NonAuthenticatedLayout>
+                }
+              />
               {/* Admin Routes (with nested layout) */}
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Dashboard />} />

@@ -1,0 +1,61 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment files
+.env
+*.local
+
+# Node modules
+node_modules/
+node_modules
+
+# Build output
+dist/
+dist-ssr/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# SSL certificates (important to NOT commit)
+ssl/
+*.pem
+*.key
+
+# Docker files (if you have .env or secrets)
+docker-compose.override.yml
+docker-compose.local.yml
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Frontend specific 
+*.cache/
+.cache/
+
+#Ignore coverage reports, test output, etc.
+coverage/
+.nyc_output/
+
+# Ignore build/temp files if using frontend frameworks
+build/
+.tmp/
+
+# Uploads (backend uploads directory)
+uploads/
+uploads/*

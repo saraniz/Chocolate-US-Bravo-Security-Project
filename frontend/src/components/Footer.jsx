@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelopeOpen, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 const Footer = () => {
+  
   return (
     <div className='bg-black text-white px-10 md:px-20'>
       <div className="container-fluid py-10">
