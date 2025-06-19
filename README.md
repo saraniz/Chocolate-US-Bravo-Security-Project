@@ -1,6 +1,18 @@
-# Chocolate Bravo
+# Chocolate Bravo 🍫  
+A full-stack e-commerce web application built with the MERN stack (MongoDB, Express, React, Node.js) featuring Docker-based local development and production-ready Kubernetes deployment.
 
-A full-stack e-commerce web application with MERN stack.
+---
+
+## 🧩 Tech Stack
+
+- **Frontend**: React + Vite + TailwindCSS
+- **Backend**: Node.js + Express
+- **Database**: MongoDB (commented out for now, ready for integration)
+- **Cache**: Redis
+- **Web Server**: NGINX
+- **Containerization**: Docker + Docker Compose
+- **Orchestration**: Kubernetes + Kustomize
+- **CI/CD Ready**: Designed for GitHub Actions, Helm, and Ingress setups
 
 ## Project Structure
 
