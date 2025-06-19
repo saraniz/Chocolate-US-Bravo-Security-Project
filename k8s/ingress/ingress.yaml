@@ -16,3 +16,26 @@ spec:
             name: nginx
             port:
               number: 80
+
+
+# Why use Ingress?
+
+# By default:
+# Your services (Service objects) expose apps internally in the cluster.
+# If you want external traffic (e.g., from a browser) to reach your app, you have to expose each service with a NodePort or LoadBalancer.
+
+# But with Ingress, you can:
+# Use a single public IP to route to multiple services (like frontend, backend, etc.).
+
+# Define routing rules like:
+# / → frontend
+# /api → backend
+# /admin → another service
+
+# Manage TLS/HTTPS with automatic certs (e.g., with cert-manager + Let's Encrypt).
+# Add rate limiting, auth, headers, redirects, etc., via annotations.
+
+
+# In this project, we use Ingress to:
+# All requests to http://localhost/ will be routed to the nginx service.
+# From there, NGINX (inside your cluster) reverse-proxies to frontend, backend, etc., as configured in your nginx.conf.
