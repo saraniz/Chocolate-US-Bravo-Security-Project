@@ -1,6 +1,6 @@
 # Chocolate Bravo
 
-A full-stack web application with a React frontend and Node.js backend.
+A full-stack e-commerce web application with MERN stack.
 
 ## Project Structure
 
@@ -8,7 +8,10 @@ A full-stack web application with a React frontend and Node.js backend.
 chocolate-bravo/
 ├── frontend/          # React frontend application
 ├── backend/           # Node.js backend server
-└── README.md         # Project documentation
+├── k8s/               # Kubernetes manifests
+├── nginx/             # Nginx config for reverse proxy
+├── ssl/               # SSL certificates (if used)
+└── README.md          # Project documentation
 ```
 
 ## Prerequisites
@@ -16,6 +19,56 @@ chocolate-bravo/
 - Node.js (v18.x LTS recommended)
 - npm (comes with Node.js)
 - Git
+- Docker (for containerization)
+- Kubernetes (for orchestration, e.g., minikube, kind, or a cloud provider)
+
+## Environment Variables
+
+This project uses separate environment files for the backend and frontend, but all documentation is provided here for convenience.
+
+### Backend Environment Variables (`backend/.env`)
+Create a `.env` file in the `backend` directory with the following variables:
+
+```env
+# Server
+PORT=8000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+
+# MongoDB
+MONGO_URI=mongodb://localhost:27017/chocolate-bravo
+
+# JWT
+JWT_SECRET=your_jwt_secret
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=your_redis_password
+
+# Cloudinary (for image uploads)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# File Uploads
+BASE_URL=http://localhost:8000
+```
+
+- The backend `.env` contains all sensitive server, database, Redis, JWT, and Cloudinary variables. These should never be shared with the frontend.
+
+### Frontend Environment Variables (`frontend/.env`)
+Create a `.env` file in the `frontend` directory for Vite environment variables. For example:
+
+```env
+VITE_API_URL=http://localhost:8000/api
+```
+
+- `VITE_API_URL`: The base URL for the backend API. This is used in the frontend to make API requests. All Vite environment variables must be prefixed with `VITE_` to be accessible in the React app via `import.meta.env`.
+- Only variables prefixed with `VITE_` are accessible in the frontend React app.
+
+**Note:**
+- The backend and frontend each require their own `.env` files, but all configuration is documented here for clarity.
 
 ## Installation
 
@@ -25,21 +78,11 @@ chocolate-bravo/
    ```bash
    cd backend
    ```
-
 2. Install dependencies:
    ```bash
    npm install
    ```
-
-   > **Note:** If you encounter any issues with Node.js version compatibility, please ensure you're using Node.js v18.x LTS. The project may not work correctly with Node.js v24+ due to compatibility issues with some packages (particularly bcrypt).
-
-3. Create a `.env` file in the backend directory with your environment variables:
-   ```env
-   PORT=8000
-   MONGO_URI=
-   # Add other environment variables as needed
-   ```
-
+3. Create a `.env` file as described above.
 4. Start the backend server:
    ```bash
    npm start
@@ -51,16 +94,61 @@ chocolate-bravo/
    ```bash
    cd frontend
    ```
-
 2. Install dependencies:
    ```bash
    npm install
    ```
-
 3. Start the frontend development server:
    ```bash
-   npm start
+   npm run dev
    ```
+
+## Docker Usage
+
+To run the app with Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+- Make sure to set up your `.env` file in the backend directory before building.
+- The `docker-compose.yml` file will set up the backend, frontend, Redis, and MongoDB containers.
+
+## Kubernetes Usage
+
+Kubernetes manifests are in the `k8s/` directory. To deploy:
+
+```bash
+kubectl apply -k k8s/
+```
+
+- You may need to create Kubernetes secrets/configmaps for environment variables.
+- The manifests cover backend, frontend, Redis, Nginx, and ingress.
+
+## Redis Setup
+
+- Redis is used for session storage and caching.
+- You can run Redis locally, via Docker, or in Kubernetes.
+- Configure `REDIS_HOST`, `REDIS_PORT`, and `REDIS_PASSWORD` in your `.env` file.
+
+## Cloudinary Setup
+
+- For production, set up a Cloudinary account and fill in the `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` in your `.env` file.
+- For local development, you can use local uploads (see `BASE_URL`).
+
+## Backend Utility Scripts
+
+In `backend/scripts/`:
+- `install-redis.sh`: Script to install Redis locally (Linux/Mac).
+- `initDB.js`: Initialize the database with seed data.
+- `createAdmin.js`: Create an admin user.
+- `checkDb.js`: Check MongoDB connection.
+
+Run with:
+```bash
+node scripts/initDB.js
+node scripts/createAdmin.js
+```
 
 ## Node.js Version Compatibility
 
@@ -76,23 +164,25 @@ If you encounter errors during `npm install` in the backend directory, particula
    ```bash
    node -v
    ```
-
 2. If you're using Node.js v24+, switch to v18.x LTS using nvm:
    ```bash
    nvm install 18
    nvm use 18
    ```
-
 3. Clean the npm cache and node_modules:
    ```bash
    npm cache clean --force
    rm -rf node_modules package-lock.json
    ```
-
 4. Reinstall dependencies:
    ```bash
    npm install
    ```
+
+## File Uploads
+
+- The application handles file uploads (like product images) in the `backend/uploads` directory (created automatically on first upload).
+- For production, use a file storage service (e.g., AWS S3, Google Cloud Storage, or Cloudinary) and configure the appropriate environment variables.
 
 ## Contributing
 
@@ -110,12 +200,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Thanks to all contributors who have helped shape this project
 - Special thanks to the open-source community for their invaluable tools and libraries 
-
-## File Uploads
-
-The application handles file uploads (like product images) in the `backend/uploads` directory. This directory is not tracked in Git and should be created locally when running the application. The directory will be created automatically when the first file is uploaded.
-
-For production environments, it's recommended to:
-1. Use a proper file storage service (like AWS S3, Google Cloud Storage, etc.)
-2. Configure the appropriate environment variables for your storage service
-3. Update the upload controller to use the configured storage service 
