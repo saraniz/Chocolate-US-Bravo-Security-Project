@@ -7,48 +7,51 @@ export default function authController({ redisClient, sessionStore }) {
   // @route   POST /api/auth/login
   // @access  Public
   const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    // Apply rate limiting for login attempts
-    const loginKey = `login:${req.ip}`;
-    const loginAttempts = await redisClient.incr(loginKey);
-    if (loginAttempts === 1) {
-      await redisClient.expire(loginKey, 3600); // 1 hour
-    }
-    if (loginAttempts > 5) {
-      res.status(429);
-      throw new Error('Too many login attempts. Please try again later.');
-    }
+  const loginKey = `login:${req.ip}`;
+  const loginAttempts = await redisClient.incr(loginKey);
 
-    const user = await User.findOne({ email });
+  if (loginAttempts === 1) {
+    await redisClient.expire(loginKey, 300); // 5 mins
+  }
 
-    if (user && (await user.matchPassword(password))) {
-      // Reset login attempts on successful login
-      await redisClient.del(loginKey);
+  if (loginAttempts > 10) {
+    const ttl = await redisClient.ttl(loginKey); // get seconds until reset
+    return res.status(429).json({
+      message: `Too many login attempts. Try again in ${ttl} seconds.`,
+      retryAfter: ttl,
+    });
+  }
 
-      // Generate token
-      generateToken(res, user._id);
+  const user = await User.findOne({ email }).select('+password');
 
-      // Store session in Redis
-      const sessionId = req.cookies.jwt;
+  if (user && (await user.matchPassword(password))) {
+    await redisClient.del(loginKey);
+    generateToken(res, user._id);
+
+    const sessionId = req.cookies?.jwt;
+    if (sessionId) {
       await sessionStore.set(sessionId, {
         userId: user._id,
         email: user.email,
         isAdmin: user.isAdmin,
-        lastActivity: Date.now()
+        lastActivity: Date.now(),
       });
-
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-      });
-    } else {
-      res.status(401);
-      throw new Error('Invalid email or password');
     }
-  });
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(401);
+    throw new Error('Invalid email or password');
+  }
+});
+
 
 // @desc    Register a new user
 // @route   POST /api/auth/register

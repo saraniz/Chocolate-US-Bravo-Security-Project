@@ -210,7 +210,7 @@ const Header = () => {
               </div>
             ) : (
               <Link to="/login" className="ml-4">
-                <Button className="bg-chocolate-500 hover:bg-chocolate-600 text-white flex items-center space-x-1 px-3 py-1 text-sm">
+                <Button className="bg-black text-white flex items-center space-x-1 px-3 py-1 text-sm ">
                   <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
                   <span className="hidden sm:inline">Login</span>
                 </Button>
