@@ -12,23 +12,24 @@ const Users = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const fetchUsers = async (page = 1) => {
-    try {
-      setLoading(true);
-      const data = await getUsers(page);
-      setUsers(data.users);
-      setTotalPages(data.pages);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch users');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchUsers = async () => {
+  try {
+    setLoading(true);
+    const data = await getUsers(); // no page parameter, backend returns array of users
+    setUsers(data);                // directly assign array
+    setTotalPages(1);              // no pagination available
+    setError(null);
+  } catch (err) {
+    setError(err.response?.data?.message || 'Failed to fetch users');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
-    fetchUsers(currentPage);
-  }, [currentPage]);
+    fetchUsers();
+  }, []);
 
   const handleAddSuccess = () => {
     setShowAddForm(false);

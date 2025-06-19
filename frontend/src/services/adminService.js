@@ -62,10 +62,11 @@ export const updateOrderStatus = async (orderId, isDelivered) => {
 };
 
 // Users
-export const getUsers = async () => {
-  const response = await api.get('/users');
+export const getUsers = async (page = 1) => {
+  const response = await api.get(`/users?page=${page}`);
   return response.data;
 };
+
 
 export const registerUser = async (userData) => {
   const response = await api.post('/users', userData);

@@ -13,6 +13,8 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import createAdminRouter from "./routes/adminRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import createProductRouter from "./routes/productRoutes.js";
+import createAuthRouter from "./routes/authRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config(); 
 
@@ -20,6 +22,9 @@ const app = express();
 
 // Connect to MongoDB
 connectDB();
+
+// Cookie parser for handling cookies
+app.use(cookieParser());
 
 // Initialize Redis
 let redisClient, sessionStore, cacheMiddleware, invalidateCache;
@@ -68,6 +73,7 @@ app.use('/api/products', createProductRouter({ redisClient, sessionStore, invali
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/auth', createAuthRouter({ redisClient, sessionStore, invalidateCache }));
 
 // Admin routes
 app.use('/api/admin', createAdminRouter({ redisClient, sessionStore, invalidateCache }));

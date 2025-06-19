@@ -14,24 +14,25 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchTimeout, setSearchTimeout] = useState(null);
 
-  const fetchProducts = async (page = 1, search = '') => {
-    try {
-      setLoading(true);
-      const data = await getProducts(page, search);
-      setProducts(data.products);
-      setTotalPages(data.pages);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch products');
-      toast.error('Failed to fetch products');
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchProducts = async (page = 1, search = '') => {
+  try {
+    setLoading(true);
+    const data = await getProducts(page, search);  // if backend returns array only
+    setProducts(data);   // directly set data, no data.products
+    setTotalPages(1);    // no pagination info
+    setError(null);
+  } catch (err) {
+    setError(err.response?.data?.message || 'Failed to fetch products');
+    toast.error('Failed to fetch products');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchProducts(currentPage, searchQuery);
-  }, [currentPage]);
+  }, [currentPage, searchQuery]);
 
   const handleSearch = (e) => {
     const query = e.target.value;
