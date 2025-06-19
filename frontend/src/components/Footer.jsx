@@ -21,21 +21,21 @@ const Footer = () => {
             <ul className="space-y-2">
               <div className='flex md:space-y-2 md:block'>
                 <li>
-                <Link className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/newest-product">Newest Product</Link>
+                <Link onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/newest-product">Newest Product</Link>
               </li>
               <div className='md:hidden px-5 text-sm text-neutral-400'>|</div>
               <li>
-                <Link className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/">Home</Link>
+                <Link onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/">Home</Link>
               </li>
               </div>
               
               <div className='flex md:space-y-2 md:block'>
                 <li>
-                <Link className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/login">Login/Signup</Link>
+                <Link onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/login">Login/Signup</Link>
               </li>
               <div className='md:hidden px-5 text-sm text-neutral-400'>|</div>
               <li>
-                <Link className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/about">About Us</Link>
+                <Link onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-sm text-neutral-400 hover:text-chocolate-500 transition duration-300" to="/about">About Us</Link>
               </li>
               </div>
               
