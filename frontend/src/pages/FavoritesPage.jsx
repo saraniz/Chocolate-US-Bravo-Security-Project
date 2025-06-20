@@ -18,28 +18,31 @@ const FavoritesPage = () => {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { addToCart } = useCart();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await getProducts();
-        if (Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          console.error('Received non-array data:', data);
-          setProducts([]);
-        }
-      } catch (err) {
-        console.error('Error loading products:', err);
-        setError('Failed to load products. Please try again later.');
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await getProducts();
 
-    fetchProducts();
-  }, []);
+      // ✅ Fix: extract products from the response
+      if (Array.isArray(data.products)) {
+        setProducts(data.products);
+      } else {
+        console.error('Received non-array data:', data);
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error('Error loading products:', err);
+      setError('Failed to load products. Please try again later.');
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
 
   const handleAddToCart = (product) => {
     addToCart(product);
@@ -96,6 +99,7 @@ const FavoritesPage = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {favoriteProducts.map((product) => (
+            <Link to={`/product/${product._id}`} className="block">
             <div 
               key={product._id}
               className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2 hover:shadow-lg"
@@ -149,6 +153,7 @@ const FavoritesPage = () => {
                 </button>
               </div>
             </div>
+            </Link>
           ))}
         </div>
       )}

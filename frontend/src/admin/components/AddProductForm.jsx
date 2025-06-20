@@ -4,6 +4,9 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const AddProductForm = ({ onSuccess }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const UPLOAD_ENDPOINT = `${API_BASE_URL}/api/admin/upload`;
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -49,7 +52,7 @@ const AddProductForm = ({ onSuccess }) => {
       
       try {
         console.log('Uploading file:', file.name);
-        const response = await axios.post('http://localhost:8000/api/admin/upload', formData, {
+        const response = await axios.post(UPLOAD_ENDPOINT, formData, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
