@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: kishgi/chocolate-bravo-backend:latest
+        image: dkr.ecr.eu-north-1.amazonaws.com/chocolate-bravo-backend:latest
         ports:
         - containerPort: 8000
         envFrom:

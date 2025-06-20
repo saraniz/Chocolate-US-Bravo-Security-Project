@@ -21,7 +21,7 @@ spec:
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
+          subPath: nginx.conf   # Mount the specific file from ConfigMap
         - name: ssl-cert
           mountPath: /etc/nginx/ssl
         - name: nginx-storage

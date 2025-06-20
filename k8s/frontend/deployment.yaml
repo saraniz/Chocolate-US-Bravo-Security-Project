@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: kishgi/chocolate-bravo-frontend:latest
+        image: dkr.ecr.eu-north-1.amazonaws.com/chocolate-bravo-frontend:latest
         ports:
         - containerPort: 80
