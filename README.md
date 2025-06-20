@@ -42,29 +42,37 @@ This project uses separate environment files for the backend and frontend, but a
 Create a `.env` file in the `backend` directory with the following variables:
 
 ```env
-# Server
-PORT=8000
+# Server Configuration
 NODE_ENV=development
-FRONTEND_URL=http://localhost:5173
+PORT=8000
 
-# MongoDB
-MONGO_URI=mongodb://localhost:27017/chocolate-bravo
+# MongoDB Configuration
+MONGO_URI=
 
-# JWT
-JWT_SECRET=your_jwt_secret
 
-# Redis
-REDIS_HOST=localhost
+# JWT Configuration
+JWT_SECRET =
+JWT_EXPIRES_IN=24h
+
+# Redis Configuration
+REDIS_HOST=127.0.0.1 # change this to 'redis' if using docker
 REDIS_PORT=6379
-REDIS_PASSWORD=your_redis_password
+REDIS_PASSWORD=
 
-# Cloudinary (for image uploads)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+# File Upload Configuration
+UPLOAD_PATH=/app/uploads
+MAX_FILE_SIZE=5242880
+ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif
 
-# File Uploads
-BASE_URL=http://localhost:8000
+# CORS Configuration
+CORS_ORIGIN=http://localhost:5173
+CORS_CREDENTIALS=true
+CORS_METHODS=GET,POST,PUT,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=Content-Type,Authorization,X-Requested-With,Accept
+CORS_EXPOSED_HEADERS=Set-Cookie
+
+# Frontend URL
+FRONTEND_URL=http://localhost:5173
 ```
 
 - The backend `.env` contains all sensitive server, database, Redis, JWT, and Cloudinary variables. These should never be shared with the frontend.
@@ -73,7 +81,23 @@ BASE_URL=http://localhost:8000
 Create a `.env` file in the `frontend` directory for Vite environment variables. For example:
 
 ```env
+# API Configuration
 VITE_API_URL=http://localhost:8000/api
+VITE_WS_URL=
+
+# Authentication
+VITE_JWT_EXPIRES_IN=24h
+
+# Feature Flags
+VITE_ENABLE_ANALYTICS=false
+VITE_ENABLE_DEBUG_MODE=false
+
+# Upload Configuration
+VITE_MAX_FILE_SIZE=5242880
+VITE_ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif
+
+# Environment
+NODE_ENV=development
 ```
 
 - `VITE_API_URL`: The base URL for the backend API. This is used in the frontend to make API requests. All Vite environment variables must be prefixed with `VITE_` to be accessible in the React app via `import.meta.env`.
