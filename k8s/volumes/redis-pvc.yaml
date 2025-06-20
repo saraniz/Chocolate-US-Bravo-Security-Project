@@ -5,6 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: gp2        # Add this line
   resources:
     requests:
       storage: 500Mi
